@@ -22,4 +22,9 @@ exports.signIn = async (req, res) => {
 
   const isMatched = await user.comparePasswords(password);
   if (!isMatched) return sendError(res, "Passwords do not match.");
+
+  res.json({
+    success: true,
+    user: { name: user.name, email: user.email, id: user.id },
+  });
 };
