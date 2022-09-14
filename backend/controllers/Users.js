@@ -14,10 +14,11 @@ exports.createUser = async (req, res) => {
 
 exports.signIn = async (req, res) => {
   const { email, password } = req.body;
+
   if (!email.trim() || !password.trim())
     return sendError(res, "Missing email/password.");
 
-  const user = await UserModel.findOne({ email });
+  const user = await UserModel.findOne({ email: email.toLowerCase() });
   if (!user) return sendError(res, "User not found.");
 
   const isMatched = await user.comparePasswords(password);
@@ -26,5 +27,15 @@ exports.signIn = async (req, res) => {
   res.json({
     success: true,
     user: { name: user.name, email: user.email, id: user.id },
+  });
+};
+
+exports.getUsers = async (req, res) => {
+  UserModel.find({}, (err, result) => {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json(result);
+    }
   });
 };

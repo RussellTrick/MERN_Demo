@@ -15,16 +15,6 @@ app.use("/api/v1/users/", userRouter);
 
 mongoose.connect(process.env.dbConnect);
 
-app.get("/getUsers", (req, res) => {
-  UserModel.find({}, (err, result) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
-});
-
 app.listen(PORT, () => {
   console.log("listening on http://localhost:" + PORT);
 });
