@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Loginbox.css";
+import axios from "axios";
+
+const urlStart = "http://localhost:3001";
 
 const Loginbox = () => {
+  const tryLogin = async () => {
+    const data = await axios.get(urlStart + "/api/v1/users/getusers");
+    console.log(data);
+  };
+
+  useEffect(() => {
+    tryLogin();
+  }, []);
+
   return (
     <div className="login-form">
       <h2>Login</h2>
