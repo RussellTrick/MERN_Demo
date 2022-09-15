@@ -13,7 +13,7 @@ const Loginbox = () => {
 
         <div className="user-box">
           <input type="password" name="" required=" "></input>
-          <label>Username</label>
+          <label>Password</label>
         </div>
 
         <div>
