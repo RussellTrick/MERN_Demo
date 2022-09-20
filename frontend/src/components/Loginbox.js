@@ -1,30 +1,59 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import "./Loginbox.css";
+import { useNavigate } from "react-router";
 import axios from "axios";
-
-const urlStart = "http://localhost:3001";
+const baseURL = "http://localhost:3001/api/v1";
 
 const Loginbox = () => {
-  const tryLogin = async () => {
-    const data = await axios.get(urlStart + "/api/v1/users/getusers");
-    console.log(data);
+  const [formData, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setForm({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  useEffect(() => {
-    tryLogin();
-  }, []);
+  async function onSubmit(e) {
+    e.preventDefault();
+    axios({
+      method: "post",
+      url: baseURL + "/users/signin",
+      data: formData,
+    })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err.response));
+
+    setForm({ password: "" });
+    navigate("/");
+  }
 
   return (
     <div className="login-form">
       <h2>Login</h2>
-      <form>
+      <form onSubmit={onSubmit}>
         <div className="user-box">
-          <input type="text" name="" required=" "></input>
+          <input
+            type="text"
+            name="email"
+            required=" "
+            onChange={handleChange}
+          ></input>
           <label>Email</label>
         </div>
 
         <div className="user-box">
-          <input type="password" name="" required=" "></input>
+          <input
+            type="password"
+            name="password"
+            required=" "
+            onChange={handleChange}
+          ></input>
           <label>Password</label>
         </div>
 
@@ -34,9 +63,7 @@ const Loginbox = () => {
           </a>
         </div>
 
-        <a href="#" className="btn-submit">
-          Submit
-        </a>
+        <input type="submit" className="btn-submit"></input>
       </form>
     </div>
   );

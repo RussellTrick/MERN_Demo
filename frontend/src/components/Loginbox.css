@@ -84,6 +84,7 @@
     margin-top: 20px;
     letter-spacing: 4px;
     border: solid #03e9f4;
+    background: rgba(0,0,0, .5);
 }
 
 .btn-submit:hover{
