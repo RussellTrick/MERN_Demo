@@ -12,7 +12,7 @@ function App() {
       <div>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          {/* <Route path="/bugs" element={<Bugs />} /> */}
+          <Route path="/bugs" element={<Bugs />} />
         </Routes>
       </div>
     </div>

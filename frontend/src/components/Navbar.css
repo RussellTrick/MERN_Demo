@@ -4,7 +4,6 @@
     width: 75px;
     height: 100vh;
     display: flex;
-    flex-direction: row;
 }
 
 .nav ul {
@@ -28,4 +27,14 @@ img{
 .img-container{
     display:flex;
     justify-content: center;
+}
+
+a.nav_link:hover {
+    cursor: pointer;
+    background-color: #777; 
+    }
+
+
+.active{
+    background-color: rgb(255, 0, 0);
 }

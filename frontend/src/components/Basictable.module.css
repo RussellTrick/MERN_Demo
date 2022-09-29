@@ -1,7 +1,7 @@
 table {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    overflow: auto;
   }
   
   table td, table th {
@@ -17,6 +17,11 @@ table {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: center;
-    background-color: #04AA6D;
+    background-color: #172031;
     color: white;
   }
+
+.container{
+  height: 100vh;
+  overflow:auto;
+}
