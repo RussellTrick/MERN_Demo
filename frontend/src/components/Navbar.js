@@ -1,15 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
+import dash from "../img/dashboard.svg";
+import bug from "../img/bug.svg";
 
 function Navbar() {
   return (
-    <nav className="nav">
-      <Link to="/">Dashboard</Link>
+    <div className="nav">
       <ul>
-        <CustomLink to="/bugs">Bugs</CustomLink>
+        <Link to="/">
+          <div className="img-container">
+            <img src={dash} alt="dashboard img" />
+          </div>
+          Dashboard
+        </Link>
+        <CustomLink to="/bugs">
+          <div className="img-container">
+            <img src={bug} alt="bug img" />
+          </div>
+          Bugs
+        </CustomLink>
       </ul>
-    </nav>
+    </div>
   );
 }
 
