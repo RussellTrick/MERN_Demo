@@ -1,8 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
-import dash from "../img/dashboard.svg";
-import bug from "../img/bug.svg";
+import "boxicons";
 
 function Navbar() {
   return (
@@ -10,17 +9,27 @@ function Navbar() {
       <ul>
         <NavLink className="nav_link" to="/" end>
           <div className="img-container">
-            <img src={dash} alt="dashboard img" />
+            <box-icon name="dashboard" type="solid" color="white"></box-icon>
           </div>
           Dashboard
         </NavLink>
         <NavLink className="nav_link" to="/bugs" end>
           <div className="img-container">
-            <img src={bug} alt="bug img" />
+            <box-icon name="bug" color="white"></box-icon>
           </div>
           Bugs
         </NavLink>
       </ul>
+      <a
+        className="end"
+        href="https://github.com/RussellTrick"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <div className="img-container">
+          <box-icon type="logo" color="#ffffff" name="github"></box-icon>
+        </div>
+      </a>
     </div>
   );
 }
