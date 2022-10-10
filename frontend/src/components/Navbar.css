@@ -1,6 +1,6 @@
 .active{
-    background-color: #03e9f4;
-    border-radius: 2px;
+    box-shadow:-2px 2px 4px 2px #03e9f4;
+    border-radius: 10px;
 }
 
 .nav{
@@ -11,6 +11,7 @@
     margin-right: 3px;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     color: white;
 }
 
@@ -45,7 +46,7 @@
 a.nav_link:hover {
     cursor: pointer;
     background-color: #777;
-    border-radius: 2px; 
+    border-radius: 10px; 
 }
 
 
@@ -57,6 +58,3 @@ a:visited, a:link{
     margin-bottom: 20px;
 }
 
-a.active{
-    color: black;
-}
