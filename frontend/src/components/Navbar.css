@@ -1,5 +1,5 @@
 .active{
-    box-shadow:-2px 2px 4px 2px #03e9f4;
+    background-color: #03e9f4;
     border-radius: 10px;
 }
 
@@ -30,23 +30,27 @@
     height: 70px;
 }
 
-.nav box-icon{
-    width: 50px;
-    height: 50px;
+.FontAwesomeIcon{
+    width: 35px;
+    height: 35px;
+    color: inherit;
 }
 
 .img-container{
+    height:70px;
+    width:70px;
     display:flex;
     justify-content: center;
     align-items: center;
     margin-top: 4px;
+    flex-direction: column;
 }
 
 
 a.nav_link:hover {
     cursor: pointer;
     background-color: #777;
-    border-radius: 10px; 
+    border-radius: 10px;
 }
 
 
@@ -57,4 +61,9 @@ a:visited, a:link{
 .end{
     margin-bottom: 20px;
 }
+
+a.active{
+    color: black;
+}
+
 

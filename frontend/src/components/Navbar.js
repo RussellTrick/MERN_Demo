@@ -1,7 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
-import "boxicons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartSimple, faBug } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 function Navbar() {
   return (
@@ -9,15 +11,15 @@ function Navbar() {
       <ul>
         <NavLink className="nav_link" to="/" end>
           <div className="img-container">
-            <box-icon name="dashboard" type="solid" color="white"></box-icon>
+            <FontAwesomeIcon className="FontAwesomeIcon" icon={faChartSimple} />
+            Dashboard
           </div>
-          Dashboard
         </NavLink>
         <NavLink className="nav_link" to="/bugs" end>
           <div className="img-container">
-            <box-icon name="bug" color="white"></box-icon>
+            <FontAwesomeIcon className="FontAwesomeIcon" icon={faBug} />
+            Bugs
           </div>
-          Bugs
         </NavLink>
       </ul>
       <a
@@ -27,7 +29,7 @@ function Navbar() {
         rel="noreferrer"
       >
         <div className="img-container">
-          <box-icon type="logo" color="#ffffff" name="github"></box-icon>
+          <FontAwesomeIcon className="FontAwesomeIcon" icon={faGithub} />
         </div>
       </a>
     </div>
