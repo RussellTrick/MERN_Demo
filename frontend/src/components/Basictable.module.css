@@ -2,26 +2,26 @@ table {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     overflow: auto;
+    width: 100%;
   }
   
-  table td, table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-  }
-  
-  table tr:nth-child(even){background-color: #f2f2f2;}
-  
-  table tr:hover {background-color: #ddd;}
-  
-  table th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: center;
-    background-color: #172031;
-    color: white;
-  }
-
-.container{
-  height: 100vh;
-  overflow:auto;
+table td{
+  border-top: 1px solid rgba(245, 245, 245, 0.404);
+  border-bottom: 1px solid rgba(245, 245, 245, 0.404);
+  padding: 8px;
 }
+
+table th {
+  padding: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: hsl(225, 4%, 25%);
+  color: white;
+}
+
+table tr:hover {
+background-color: #ddd;
+color: black;
+}
+  
