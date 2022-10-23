@@ -18,10 +18,25 @@ table th {
   text-align: left;
   background-color: hsl(225, 4%, 25%);
   color: white;
+  position: sticky;
+  top: 0;
 }
 
 table tr:hover {
 background-color: #ddd;
 color: black;
 }
-  
+
+::-webkit-scrollbar{
+  width: 15px;
+}
+
+::-webkit-scrollbar-track{
+  background: #141415;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #009B83;
+  border-radius: 10px;
+}

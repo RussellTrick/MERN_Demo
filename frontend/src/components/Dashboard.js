@@ -43,6 +43,48 @@ const DATATEST = [
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
+  {
+    id: 1,
+    project: "Tic Tac Toe Game",
+    description: "tictactoe game in java",
+    teamlead: "Owain",
+  },
 ];
 // ----------------------------------------------------------------
 
@@ -59,7 +101,7 @@ const Dashboard = () => {
           <button className="project-btn">New project</button>
         </div>
         <div className="project-table-container">
-          <Basictable COLUMNS={COLUMNS} DATA={DATATEST} />
+          <Basictable COLUMNS={COLUMNS} DATA={DATATEST} FILTER />
         </div>
       </div>
 

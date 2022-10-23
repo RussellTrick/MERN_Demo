@@ -1,48 +1,68 @@
 import React, { useMemo } from "react";
-import { useTable } from "react-table";
+import { useTable, useGlobalFilter } from "react-table";
 import TableCSS from "./Basictable.module.css";
+import { GlobalFilter } from "./GlobalFilter";
 
 const Basictable = (props) => {
   const columns = useMemo(() => props.COLUMNS, []);
   const data = useMemo(() => props.DATA, []);
 
-  const tableInstance = useTable({
-    columns: columns,
-    data: data,
-  });
+  const tableInstance = useTable(
+    {
+      columns: columns,
+      data: data,
+    },
+    useGlobalFilter
+  );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    tableInstance;
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    setGlobalFilter,
+  } = tableInstance;
+
+  const { globalFilter } = state;
 
   return (
-    <div className={TableCSS.container}>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")} </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  );
-                })}
+    <>
+      {props.FILTER ? (
+        <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+      ) : null}
+      <div className={TableCSS.container}>
+        <table {...getTableProps()}>
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th {...column.getHeaderProps()}>
+                    {column.render("Header")}{" "}
+                  </th>
+                ))}
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+            ))}
+          </thead>
+
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 };
 
