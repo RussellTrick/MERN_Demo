@@ -30,7 +30,11 @@ const Basictable = (props) => {
   return (
     <>
       {props.FILTER ? (
-        <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+        <GlobalFilter
+          filter={globalFilter}
+          setFilter={setGlobalFilter}
+          placeholder={props.PLACEHOLDER}
+        />
       ) : null}
       <div className={TableCSS.container}>
         <table {...getTableProps()}>

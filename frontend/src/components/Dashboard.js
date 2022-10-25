@@ -3,6 +3,8 @@ import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
 import Basictable from "./Basictable";
+import NewProject from "./NewProject";
+import { useState } from "react";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -90,95 +92,131 @@ const DATATEST = [
 
 // TODO Create different pie charts
 const Dashboard = () => {
+  const [projectPopup, setProjectPopup] = useState(false);
+
   return (
-    <div className="dashboard-container">
-      <div className="blue-bar"></div>
-      <h4 className="page-title">DASHBOARD</h4>
+    <>
+      <NewProject
+        className="new-project"
+        trigger={projectPopup}
+        setTrigger={setProjectPopup}
+      >
+        <h3>Popup trigger here</h3>
+      </NewProject>
 
-      <div className="project-container">
-        <div className="project-top-container">
-          <h3>Projects</h3>
-          <button className="project-btn">New project</button>
+      <div className="dashboard-container">
+        <div className="blue-bar"></div>
+        <h4 className="page-title">DASHBOARD</h4>
+        <div className="project-container">
+          <div className="project-top-container">
+            <h3>Projects</h3>
+            <button
+              className="project-btn"
+              onClick={() => setProjectPopup(true)}
+            >
+              New project
+            </button>
+          </div>
+          <div className="project-table-container">
+            <Basictable
+              COLUMNS={COLUMNS}
+              DATA={DATATEST}
+              FILTER
+              PLACEHOLDER="Filter by Project, Description or Team Lead"
+            />
+          </div>
         </div>
-        <div className="project-table-container">
-          <Basictable COLUMNS={COLUMNS} DATA={DATATEST} FILTER />
+
+        <div className="chart-container">
+          <div className="pie-wrapper">
+            <h2>Tickets by Priority</h2>
+            <div className="pie-container">
+              <PieChart
+                style={{ height: "150px" }}
+                data={[
+                  { label: {}, title: "Low", value: low, color: "#009B83" },
+                  {
+                    label: {},
+                    title: "Normal",
+                    value: normal,
+                    color: "#FFA825",
+                  },
+                  {
+                    label: {},
+                    title: "Critical",
+                    value: critical,
+                    color: "#FF2530",
+                  },
+                ]}
+              />
+              <ul>
+                <li>Critical: {critical}</li>
+                <li>Normal: {normal}</li>
+                <li>Low: {low}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pie-wrapper">
+            <h2>Tickets by Priority</h2>
+            <div className="pie-container">
+              <PieChart
+                style={{ height: "150px" }}
+                data={[
+                  { label: {}, title: "Low", value: low, color: "#009B83" },
+                  {
+                    label: {},
+                    title: "Normal",
+                    value: normal,
+                    color: "#FFA825",
+                  },
+                  {
+                    label: {},
+                    title: "Critical",
+                    value: critical,
+                    color: "#FF2530",
+                  },
+                ]}
+              />
+              <ul>
+                <li>Critical: {critical}</li>
+                <li>Normal: {normal}</li>
+                <li>Low: {low}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="pie-wrapper">
+            <h2>Tickets by Priority</h2>
+            <div className="pie-container">
+              <PieChart
+                style={{ height: "150px" }}
+                data={[
+                  { label: {}, title: "Low", value: low, color: "#009B83" },
+                  {
+                    label: {},
+                    title: "Normal",
+                    value: normal,
+                    color: "#FFA825",
+                  },
+                  {
+                    label: {},
+                    title: "Critical",
+                    value: critical,
+                    color: "#FF2530",
+                  },
+                ]}
+              />
+              <ul>
+                <li>Critical: {critical}</li>
+                <li>Normal: {normal}</li>
+                <li>Low: {low}</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="chart-container">
-        <div className="pie-wrapper">
-          <h2>Tickets by Priority</h2>
-          <div className="pie-container">
-            <PieChart
-              style={{ height: "150px" }}
-              data={[
-                { label: {}, title: "Low", value: low, color: "#009B83" },
-                { label: {}, title: "Normal", value: normal, color: "#FFA825" },
-                {
-                  label: {},
-                  title: "Critical",
-                  value: critical,
-                  color: "#FF2530",
-                },
-              ]}
-            />
-            <ul>
-              <li>Critical: {critical}</li>
-              <li>Normal: {normal}</li>
-              <li>Low: {low}</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pie-wrapper">
-          <h2>Tickets by Priority</h2>
-          <div className="pie-container">
-            <PieChart
-              style={{ height: "150px" }}
-              data={[
-                { label: {}, title: "Low", value: low, color: "#009B83" },
-                { label: {}, title: "Normal", value: normal, color: "#FFA825" },
-                {
-                  label: {},
-                  title: "Critical",
-                  value: critical,
-                  color: "#FF2530",
-                },
-              ]}
-            />
-            <ul>
-              <li>Critical: {critical}</li>
-              <li>Normal: {normal}</li>
-              <li>Low: {low}</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pie-wrapper">
-          <h2>Tickets by Priority</h2>
-          <div className="pie-container">
-            <PieChart
-              style={{ height: "150px" }}
-              data={[
-                { label: {}, title: "Low", value: low, color: "#009B83" },
-                { label: {}, title: "Normal", value: normal, color: "#FFA825" },
-                {
-                  label: {},
-                  title: "Critical",
-                  value: critical,
-                  color: "#FF2530",
-                },
-              ]}
-            />
-            <ul>
-              <li>Critical: {critical}</li>
-              <li>Normal: {normal}</li>
-              <li>Low: {low}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
