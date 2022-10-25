@@ -101,7 +101,38 @@ const Dashboard = () => {
         trigger={projectPopup}
         setTrigger={setProjectPopup}
       >
-        <h3>Popup trigger here</h3>
+        <h3>New project</h3>
+
+        <form>
+          <div className="select-container">
+            <div className="grid1">
+              <label htmlFor="title">Title</label>
+              <input name="title"></input>
+            </div>
+
+            <div className="grid1">
+              <label htmlFor="description">Description</label>
+              <textarea name="description" rows="6"></textarea>
+            </div>
+
+            <div className="grid2">
+              <label htmlfor="urgency">Status</label>
+              <select name="urgency">
+                <option value="incomplete">Incomplete</option>
+                <option value="complete">Complete</option>
+              </select>
+            </div>
+
+            <div className="grid2">
+              <label htmlfor="status">Priority</label>
+              <select name="status">
+                <option value="critical">Critical</option>
+                <option value="normal">Normal</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+        </form>
       </NewProject>
 
       <div className="dashboard-container">

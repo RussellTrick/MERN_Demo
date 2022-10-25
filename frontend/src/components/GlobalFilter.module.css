@@ -9,7 +9,7 @@
 
 .filterlabel{
     border-right: 2px solid grey;
-    border-radius: 5px, 0px, 0px;
+    border-radius: 5px 0px 0px 5px;
     background: #3D3E42;
     padding: 4px;
 }

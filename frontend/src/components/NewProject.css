@@ -8,7 +8,9 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: solid black 1px;
+    z-index: 1000;
 }
 
 .new-project-inner{
@@ -17,6 +19,7 @@
     width: 100%;
     max-width: 640px;
     background-color: hsl(220, 4%, 22%);
+    border-radius: 8px;
 }
 
 .new-project-inner .close-btn{
@@ -46,5 +49,9 @@
 
 .close-btn:hover{
     opacity:1;
+}
+
+select > option{
+    background-color: hsl(220, 4%, 22%);
 }
 
