@@ -1,0 +1,50 @@
+.new-project-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.new-project-inner{
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+    background-color: hsl(220, 4%, 22%);
+}
+
+.new-project-inner .close-btn{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+}
+
+.close-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    height: 1.5rem;
+    width: 1.5rem;
+
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    opacity:0.5;
+}
+
+.close-btn:hover{
+    opacity:1;
+}
+
