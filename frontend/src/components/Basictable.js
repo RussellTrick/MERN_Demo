@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useTable, useGlobalFilter } from "react-table";
+import { useTable, useGlobalFilter, useRowSelect } from "react-table";
 import TableCSS from "./Basictable.module.css";
 import { GlobalFilter } from "./GlobalFilter";
 
@@ -12,7 +12,8 @@ const Basictable = (props) => {
       columns: columns,
       data: data,
     },
-    useGlobalFilter
+    useGlobalFilter,
+    useRowSelect
   );
 
   const {
@@ -23,6 +24,7 @@ const Basictable = (props) => {
     prepareRow,
     state,
     setGlobalFilter,
+    selectedFlatRows,
   } = tableInstance;
 
   const { globalFilter } = state;
@@ -54,7 +56,12 @@ const Basictable = (props) => {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr
+                  {...row.getRowProps()}
+                  onClick={() => {
+                    console.log(" row click ", row);
+                  }}
+                >
                   {row.cells.map((cell) => {
                     return (
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>

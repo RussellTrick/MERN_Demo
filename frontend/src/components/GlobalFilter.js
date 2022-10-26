@@ -14,6 +14,7 @@ export const GlobalFilter = ({ filter, setFilter, placeholder }) => {
         icon={faMagnifyingGlass}
       />
       <input
+        autoFocus
         type="text"
         id="filter"
         placeholder={placeholder}

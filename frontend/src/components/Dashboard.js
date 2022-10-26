@@ -3,7 +3,7 @@ import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
 import Basictable from "./Basictable";
-import NewProject from "./NewProject";
+import NewProject from "./Project";
 import { useState } from "react";
 
 //Map out data into array
@@ -107,12 +107,16 @@ const Dashboard = () => {
           <div className="select-container">
             <div className="grid1">
               <label htmlFor="title">Title</label>
-              <input name="title"></input>
+              <input required="required" autoFocus name="title"></input>
             </div>
 
             <div className="grid1">
               <label htmlFor="description">Description</label>
-              <textarea name="description" rows="6"></textarea>
+              <textarea
+                required="required"
+                name="description"
+                rows="6"
+              ></textarea>
             </div>
 
             <div className="grid2">
@@ -131,6 +135,8 @@ const Dashboard = () => {
                 <option value="low">Low</option>
               </select>
             </div>
+
+            <button className="project-btn">Submit</button>
           </div>
         </form>
       </NewProject>
