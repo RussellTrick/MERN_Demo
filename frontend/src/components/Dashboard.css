@@ -173,7 +173,7 @@ textarea{
 }
 
 .new-project-table-container{
-    width: fit-content;
+    width: 312px;
     height: 20vh;
     overflow: auto; 
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
@@ -124,17 +124,28 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
+  const inputTitle = useRef();
+  const inputDescription = useRef();
+
+  const handleSubmit = () => {
+    const newFormData = { ...formData };
+
+    newFormData["description"] = inputDescription;
+    newFormData["project"] = inputTitle;
+    setFormData(newFormData);
+  };
+
   return (
     <>
       <Project trigger={projectPopup} setTrigger={setProjectPopup}>
         <h3>New project</h3>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="select-container">
             <div className="grid1">
               <label htmlFor="project">Title</label>
               <input
-                onChange={handleAddFormChange}
+                ref={inputTitle}
                 required="required"
                 autoFocus
                 name="project"
@@ -144,7 +155,7 @@ const Dashboard = () => {
             <div className="grid1">
               <label htmlFor="description">Description</label>
               <textarea
-                onChange={handleAddFormChange}
+                ref={inputDescription}
                 required="required"
                 name="description"
                 rows="6"

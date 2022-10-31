@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { useTable, useGlobalFilter, useRowSelect } from "react-table";
 import TableCSS from "./Basictable.module.css";
-import { Checkbox } from "./Checkbox";
 import { GlobalFilter } from "./GlobalFilter";
 
 const Selectiontable = (props) => {
@@ -16,28 +15,13 @@ const Selectiontable = (props) => {
     prepareRow,
     state,
     setGlobalFilter,
-    selectedFlatRows,
   } = useTable(
     {
       columns: columns,
       data: data,
     },
     useGlobalFilter,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => {
-        return [
-          {
-            id: "selection",
-            Header: ({ getToggleAllRowsSelectedProps }) => (
-              <Checkbox {...getToggleAllRowsSelectedProps()} />
-            ),
-            Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps} />,
-          },
-          ...columns,
-        ];
-      });
-    }
+    useRowSelect
   );
 
   const { globalFilter } = state;
