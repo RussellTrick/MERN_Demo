@@ -3,7 +3,7 @@ import { useTable, useGlobalFilter, useRowSelect } from "react-table";
 import TableCSS from "./Basictable.module.css";
 import { GlobalFilter } from "./GlobalFilter";
 
-const Basictable = (props) => {
+const Selectiontable = (props) => {
   const columns = useMemo(() => props.COLUMNS, []);
   const data = useMemo(() => props.DATA, []);
 
@@ -40,17 +40,19 @@ const Basictable = (props) => {
 
       <div className={TableCSS.container}>
         <table {...getTableProps()}>
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()}>
-                    {column.render("Header")}{" "}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
+          {props.HEADLESS ? null : (
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()}>
+                      {column.render("Header")}{" "}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+          )}
 
           <tbody {...getTableBodyProps()}>
             {rows.map((row) => {
@@ -77,4 +79,4 @@ const Basictable = (props) => {
   );
 };
 
-export default Basictable;
+export default Selectiontable;

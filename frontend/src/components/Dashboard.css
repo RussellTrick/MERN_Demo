@@ -118,15 +118,16 @@ body{
 .project-table-container{
     width: 100%;
     height: 32vh;
-    overflow: auto;;
+    overflow: auto;
 }
 
 .select-container{
     height: 100%;
     display: grid;
     grid-template-columns: auto auto;
-    gap: 0.6rem;
+    gap: 1rem;
     font-size: 16px;
+    margin-bottom: 1rem; 
 }
 
 .grid1{
@@ -146,10 +147,6 @@ textarea{
     resize:none;
 }
 
-.select-container label{
-    margin-bottom: 3px;
-}
-
 .select-container input, textarea, select{
     background: none;
 	color: inherit;
@@ -158,6 +155,10 @@ textarea{
 	font: inherit;
     border-radius: 5px;
     padding: 5px;
+}
+
+.select-container label {
+    margin-bottom: 0.3rem;
 }
 
 .select-container input:focus, textarea:focus, select:focus{
@@ -170,3 +171,11 @@ textarea{
     border-radius: 5px;
     border: none;
 }
+
+.new-project-table-container{
+    width: fit-content;
+    height: 20vh;
+    overflow: auto; 
+}
+
+

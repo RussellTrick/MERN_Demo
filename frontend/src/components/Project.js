@@ -4,7 +4,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import "./Project.css";
 import ProjectCSS from "./Project.module.css";
 
-function NewProject(props) {
+function Project(props) {
   return props.trigger ? (
     <div className="new-project-container">
       <div className="new-project-inner">
@@ -19,4 +19,4 @@ function NewProject(props) {
   );
 }
 
-export default NewProject;
+export default Project;

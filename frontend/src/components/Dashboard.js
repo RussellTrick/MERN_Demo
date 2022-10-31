@@ -3,8 +3,10 @@ import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
 import Basictable from "./Basictable";
-import NewProject from "./Project";
+import Project from "./Project";
 import { useState } from "react";
+import { format } from "date-fns";
+import Selectiontable from "./Selectiontable";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -30,6 +32,8 @@ const COLUMNS = [
   { Header: "DESCRIPTION", accessor: "description" },
   { Header: "TEAM LEAD", accessor: "teamlead" },
 ];
+
+const SELECTIONCOLUMNS = [{ Header: "DEVELOPERS", accessor: "reporter" }];
 
 // TODO create api call
 const DATATEST = [
@@ -91,28 +95,56 @@ const DATATEST = [
 // ----------------------------------------------------------------
 
 // TODO Create different pie charts
+
+const dateNow = format(new Date(), "dd/MM/yyyy");
+
 const Dashboard = () => {
   const [projectPopup, setProjectPopup] = useState(false);
 
+  const [formData, setFormData] = useState({
+    project: "",
+    description: "",
+    teamlead: "",
+    members: "",
+    status: "incomplete",
+    urgency: "critical",
+    date: { dateNow },
+  });
+
+  const handleAddFormChange = (event) => {
+    event.preventDefault();
+
+    const fieldName = event.target.getAttribute("name");
+    const fieldValue = event.target.value;
+
+    const newFormData = { ...formData };
+
+    newFormData[fieldName] = fieldValue;
+
+    setFormData(newFormData);
+  };
+
   return (
     <>
-      <NewProject
-        className="new-project"
-        trigger={projectPopup}
-        setTrigger={setProjectPopup}
-      >
+      <Project trigger={projectPopup} setTrigger={setProjectPopup}>
         <h3>New project</h3>
 
         <form>
           <div className="select-container">
             <div className="grid1">
-              <label htmlFor="title">Title</label>
-              <input required="required" autoFocus name="title"></input>
+              <label htmlFor="project">Title</label>
+              <input
+                onChange={handleAddFormChange}
+                required="required"
+                autoFocus
+                name="project"
+              ></input>
             </div>
 
             <div className="grid1">
               <label htmlFor="description">Description</label>
               <textarea
+                onChange={handleAddFormChange}
                 required="required"
                 name="description"
                 rows="6"
@@ -120,16 +152,44 @@ const Dashboard = () => {
             </div>
 
             <div className="grid2">
-              <label htmlfor="urgency">Status</label>
-              <select name="urgency">
+              <label htmlFor="developers">Developers</label>
+              <div className="new-project-table-container">
+                <Selectiontable
+                  DATA={DATA}
+                  COLUMNS={SELECTIONCOLUMNS}
+                  HEADLESS
+                  FILTER
+                  name="developers"
+                  PLACEHOLDER="Filter by Developer"
+                />
+              </div>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="teamlead">Team Lead</label>
+              <div className="new-project-table-container">
+                <Selectiontable
+                  DATA={DATA}
+                  COLUMNS={SELECTIONCOLUMNS}
+                  HEADLESS
+                  FILTER
+                  name="developers"
+                  PLACEHOLDER="Filter by Developer"
+                />
+              </div>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="status">Status</label>
+              <select onChange={handleAddFormChange} name="status">
                 <option value="incomplete">Incomplete</option>
                 <option value="complete">Complete</option>
               </select>
             </div>
 
             <div className="grid2">
-              <label htmlfor="status">Priority</label>
-              <select name="status">
+              <label htmlFor="urgency">Priority</label>
+              <select onChange={handleAddFormChange} name="urgency">
                 <option value="critical">Critical</option>
                 <option value="normal">Normal</option>
                 <option value="low">Low</option>
@@ -139,7 +199,7 @@ const Dashboard = () => {
             <button className="project-btn">Submit</button>
           </div>
         </form>
-      </NewProject>
+      </Project>
 
       <div className="dashboard-container">
         <div className="blue-bar"></div>
