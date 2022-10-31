@@ -1,20 +1,12 @@
 import React, { useMemo } from "react";
 import { useTable, useGlobalFilter, useRowSelect } from "react-table";
 import TableCSS from "./Basictable.module.css";
+import { Checkbox } from "./Checkbox";
 import { GlobalFilter } from "./GlobalFilter";
 
 const Selectiontable = (props) => {
   const columns = useMemo(() => props.COLUMNS, []);
   const data = useMemo(() => props.DATA, []);
-
-  const tableInstance = useTable(
-    {
-      columns: columns,
-      data: data,
-    },
-    useGlobalFilter,
-    useRowSelect
-  );
 
   const {
     getTableProps,
@@ -24,7 +16,29 @@ const Selectiontable = (props) => {
     prepareRow,
     state,
     setGlobalFilter,
-  } = tableInstance;
+    selectedFlatRows,
+  } = useTable(
+    {
+      columns: columns,
+      data: data,
+    },
+    useGlobalFilter,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => {
+        return [
+          {
+            id: "selection",
+            Header: ({ getToggleAllRowsSelectedProps }) => (
+              <Checkbox {...getToggleAllRowsSelectedProps()} />
+            ),
+            Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps} />,
+          },
+          ...columns,
+        ];
+      });
+    }
+  );
 
   const { globalFilter } = state;
 
@@ -58,12 +72,7 @@ const Selectiontable = (props) => {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr
-                  {...row.getRowProps()}
-                  onClick={() => {
-                    console.log(" row click ", row);
-                  }}
-                >
+                <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
