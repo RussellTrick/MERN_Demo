@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
@@ -35,6 +35,8 @@ const COLUMNS = [
 
 const SELECTIONCOLUMNS = [{ Header: "DEVELOPERS", accessor: "reporter" }];
 
+const TEAMLEADCOLUMNS = [{ Header: "TEAM LEAD", accessor: "member" }];
+
 // TODO create api call
 const DATATEST = [
   {
@@ -44,49 +46,49 @@ const DATATEST = [
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 2,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 3,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 4,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 5,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 6,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 7,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 8,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
-    id: 1,
+    id: 9,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
     teamlead: "Owain",
@@ -102,10 +104,11 @@ const Dashboard = () => {
   const [projectPopup, setProjectPopup] = useState(false);
 
   const [formData, setFormData] = useState({
+    id: 1,
     project: "",
     description: "",
     teamlead: "",
-    members: "",
+    members: [{ member: "Bob" }, { member: "Paul" }],
     status: "incomplete",
     urgency: "critical",
     date: { dateNow },
@@ -124,17 +127,51 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
-  const inputTitle = useRef();
-  const inputDescription = useRef();
+  const inputTitle = useRef(null);
+  const inputDescription = useRef(null);
 
-  const handleSubmit = () => {
+  // TODO Submit form to API
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const newFormData = { ...formData };
 
-    newFormData["description"] = inputDescription;
-    newFormData["project"] = inputTitle;
+    newFormData["description"] = inputDescription.current.value;
+    newFormData["project"] = inputTitle.current.value;
+
+    setFormData(newFormData);
+    setProjectPopup(false);
+  };
+
+  // TODO Fix includes statement
+  const childAddMemberFormData = (childdata) => {
+    const newFormData = { ...formData };
+
+    if (newFormData.members.includes([{ member: { childdata } }])) {
+      return;
+    } else {
+      newFormData.members = [...formData.members, { member: childdata }];
+    }
+
     setFormData(newFormData);
   };
 
+  const childRemoveMemberFormData = (childdata) => {
+    const newFormData = { ...formData };
+
+    if (!newFormData.members.includes([{ member: { childdata } }])) {
+      return;
+    } else {
+      newFormData.members = [
+        ...formData.members.filter(function (person) {
+          return person !== { member: childdata };
+        }),
+      ];
+    }
+
+    setFormData(newFormData);
+  };
+
+  //TODO Clear formData to default on new project close
   return (
     <>
       <Project trigger={projectPopup} setTrigger={setProjectPopup}>
@@ -170,8 +207,8 @@ const Dashboard = () => {
                   COLUMNS={SELECTIONCOLUMNS}
                   HEADLESS
                   FILTER
-                  name="developers"
                   PLACEHOLDER="Filter by Developer"
+                  childToParent={childAddMemberFormData}
                 />
               </div>
             </div>
@@ -180,12 +217,12 @@ const Dashboard = () => {
               <label htmlFor="teamlead">Team Lead</label>
               <div className="new-project-table-container">
                 <Selectiontable
-                  DATA={DATA}
-                  COLUMNS={SELECTIONCOLUMNS}
+                  DATA={formData.members}
+                  COLUMNS={TEAMLEADCOLUMNS}
                   HEADLESS
                   FILTER
-                  name="developers"
                   PLACEHOLDER="Filter by Developer"
+                  childToParent={childRemoveMemberFormData}
                 />
               </div>
             </div>

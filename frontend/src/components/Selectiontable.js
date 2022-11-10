@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useTable, useGlobalFilter, useRowSelect } from "react-table";
 import TableCSS from "./Basictable.module.css";
 import { GlobalFilter } from "./GlobalFilter";
 
 const Selectiontable = (props) => {
-  const columns = useMemo(() => props.COLUMNS, []);
-  const data = useMemo(() => props.DATA, []);
+  const columns = props.COLUMNS;
+  const data = props.DATA;
 
   const {
     getTableProps,
@@ -59,7 +59,12 @@ const Selectiontable = (props) => {
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      <td
+                        onClick={() => props.childToParent(cell.value)}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render("Cell")}
+                      </td>
                     );
                   })}
                 </tr>

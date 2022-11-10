@@ -17,6 +17,8 @@
 .new-project-inner{
     position: relative;
     padding: 32px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     width: 100%;
     max-width: 640px;
     background-color: hsl(220, 4%, 22%);
@@ -25,8 +27,8 @@
 
 .new-project-inner .close-btn{
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 20px;
+    right: 20px;
 }
 
 .close-btn{
