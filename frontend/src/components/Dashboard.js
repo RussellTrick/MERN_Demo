@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
@@ -103,16 +103,18 @@ const dateNow = format(new Date(), "dd/MM/yyyy");
 const Dashboard = () => {
   const [projectPopup, setProjectPopup] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const defaultFormData = {
     id: 1,
     project: "",
     description: "",
     teamlead: "",
-    members: [{ member: "Bob" }, { member: "Paul" }],
+    members: [],
     status: "incomplete",
     urgency: "critical",
     date: { dateNow },
-  });
+  };
+
+  const [formData, setFormData] = useState(defaultFormData);
 
   const handleAddFormChange = (event) => {
     event.preventDefault();
@@ -163,7 +165,7 @@ const Dashboard = () => {
     } else {
       newFormData.members = [
         ...formData.members.filter(function (person) {
-          return person !== { member: childdata };
+          return person !== [{ member: childdata }];
         }),
       ];
     }
@@ -171,10 +173,15 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
-  //TODO Clear formData to default on new project close
   return (
     <>
-      <Project trigger={projectPopup} setTrigger={setProjectPopup}>
+      <Project
+        trigger={projectPopup}
+        setTrigger={setProjectPopup}
+        state={formData}
+        setState={setFormData}
+        defaultFormData={defaultFormData}
+      >
         <h3>New project</h3>
 
         <form onSubmit={handleSubmit}>

@@ -8,7 +8,14 @@ function Project(props) {
   return props.trigger ? (
     <div className="new-project-container">
       <div className="new-project-inner">
-        <button className="close-btn" onClick={() => props.setTrigger(false)}>
+        <button
+          className="close-btn"
+          onClick={() => {
+            console.log(props.defaultFormData);
+            props.setTrigger(false);
+            props.setState(props.defaultFormData);
+          }}
+        >
           <FontAwesomeIcon className={ProjectCSS.FontAwesomeIcon} icon={faX} />
         </button>
         {props.children}
