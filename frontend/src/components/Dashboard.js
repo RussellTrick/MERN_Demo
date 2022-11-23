@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
 import DATA from "./MOCK_DATA.json";
@@ -43,7 +43,7 @@ const DATATEST = [
     id: 1,
     project: "Tic Tac Toe Game",
     description: "tictactoe game in java",
-    teamlead: "Owain",
+    teamlead: "",
   },
   {
     id: 2,
@@ -102,12 +102,23 @@ const dateNow = format(new Date(), "dd/MM/yyyy");
 
 const Dashboard = () => {
   const [projectPopup, setProjectPopup] = useState(false);
+  const inputTitle = useRef(null);
+  const inputDescription = useRef(null);
+
+  // Disable right click, context menu
+  useEffect(() => {
+    window.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    return () => {
+      window.removeEventListener("contextmenu", (e) => e.preventDefault());
+    };
+  }, []);
 
   const defaultFormData = {
     id: 1,
     project: "",
     description: "",
-    teamlead: "",
+    teamlead: "Not selected",
     members: [],
     status: "incomplete",
     urgency: "critical",
@@ -116,11 +127,11 @@ const Dashboard = () => {
 
   const [formData, setFormData] = useState(defaultFormData);
 
-  const handleAddFormChange = (event) => {
-    event.preventDefault();
+  const handleAddFormChange = (e) => {
+    e.preventDefault();
 
-    const fieldName = event.target.getAttribute("name");
-    const fieldValue = event.target.value;
+    const fieldName = e.target.getAttribute("name");
+    const fieldValue = e.target.value;
 
     const newFormData = { ...formData };
 
@@ -129,10 +140,7 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
-  const inputTitle = useRef(null);
-  const inputDescription = useRef(null);
-
-  // TODO Submit form to API
+  // TODO Submit form to API && Refactor so that formData is sent to the API
   const handleSubmit = (e) => {
     e.preventDefault();
     const newFormData = { ...formData };
@@ -144,11 +152,10 @@ const Dashboard = () => {
     setProjectPopup(false);
   };
 
-  // TODO Fix includes statement
   const childAddMemberFormData = (childdata) => {
     const newFormData = { ...formData };
 
-    if (newFormData.members.includes([{ member: { childdata } }])) {
+    if (newFormData.members.some((item) => item.member === childdata)) {
       return;
     } else {
       newFormData.members = [...formData.members, { member: childdata }];
@@ -160,15 +167,28 @@ const Dashboard = () => {
   const childRemoveMemberFormData = (childdata) => {
     const newFormData = { ...formData };
 
-    if (!newFormData.members.includes([{ member: { childdata } }])) {
+    if (!newFormData.members.some((item) => item.member === childdata)) {
       return;
     } else {
-      newFormData.members = [
-        ...formData.members.filter(function (person) {
-          return person !== [{ member: childdata }];
-        }),
-      ];
+      newFormData.members = formData.members.filter(
+        (item) => item.member !== childdata
+      );
     }
+
+    setFormData(newFormData);
+  };
+
+  const childTeamLeadSelect = (childdata) => {
+    const newFormData = { ...formData };
+
+    if (newFormData.teamlead.includes(childdata)) {
+      return;
+    } else {
+      newFormData.teamlead = childdata;
+    }
+
+    var z = document.getElementById("members");
+    z.style.color = "#009B83";
 
     setFormData(newFormData);
   };
@@ -207,29 +227,36 @@ const Dashboard = () => {
             </div>
 
             <div className="grid2">
-              <label htmlFor="developers">Developers</label>
+              <label title="Click to add member">Choose Members</label>
               <div className="new-project-table-container">
                 <Selectiontable
                   DATA={DATA}
                   COLUMNS={SELECTIONCOLUMNS}
                   HEADLESS
                   FILTER
-                  PLACEHOLDER="Filter by Developer"
-                  childToParent={childAddMemberFormData}
+                  PLACEHOLDER="Filter by Employee"
+                  leftClickCell={childAddMemberFormData}
                 />
               </div>
             </div>
 
             <div className="grid2">
-              <label htmlFor="teamlead">Team Lead</label>
+              <label
+                title="Left click to assign Team Lead | Right click to remove Members"
+                id="members"
+                style={{ color: "#FF2530" }}
+              >
+                Team Lead: {formData.teamlead}
+              </label>
               <div className="new-project-table-container">
                 <Selectiontable
                   DATA={formData.members}
                   COLUMNS={TEAMLEADCOLUMNS}
                   HEADLESS
                   FILTER
-                  PLACEHOLDER="Filter by Developer"
-                  childToParent={childRemoveMemberFormData}
+                  PLACEHOLDER="Filter by Employee"
+                  leftClickCell={childTeamLeadSelect}
+                  rightClickCell={childRemoveMemberFormData}
                 />
               </div>
             </div>

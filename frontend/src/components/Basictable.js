@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useTable, useGlobalFilter, useRowSelect } from "react-table";
 import TableCSS from "./Basictable.module.css";
 import { GlobalFilter } from "./GlobalFilter";
 
 const Basictable = (props) => {
-  const columns = useMemo(() => props.COLUMNS, []);
-  const data = useMemo(() => props.DATA, []);
+  const columns = props.COLUMNS;
+  const data = props.DATA;
 
   const tableInstance = useTable(
     {
