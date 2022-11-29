@@ -7,6 +7,9 @@ import Project from "./Project";
 import { useState } from "react";
 import { format } from "date-fns";
 import Selectiontable from "./Selectiontable";
+import Modal from "./Modal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -47,19 +50,19 @@ const DATATEST = [
   },
   {
     id: 2,
-    project: "Tic Tac Toe Game",
+    project: "Dog game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
     id: 3,
-    project: "Tic Tac Toe Game",
+    project: "Cat game",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
   {
     id: 4,
-    project: "Tic Tac Toe Game",
+    project: "Developer portal",
     description: "tictactoe game in java",
     teamlead: "Owain",
   },
@@ -102,6 +105,8 @@ const dateNow = format(new Date(), "dd/MM/yyyy");
 
 const Dashboard = () => {
   const [projectPopup, setProjectPopup] = useState(false);
+  const [deletePopup, setDeletePopup] = useState(false);
+  const [helpPopup, setHelpPopup] = useState(false);
   const inputTitle = useRef(null);
   const inputDescription = useRef(null);
 
@@ -125,6 +130,10 @@ const Dashboard = () => {
     date: { dateNow },
   };
 
+  const [dataTEST, setDataTEST] = useState(DATATEST);
+
+  const [deleteConfirmationState, setDeleteConfirmationState] =
+    useState(defaultFormData);
   const [formData, setFormData] = useState(defaultFormData);
 
   const handleAddFormChange = (e) => {
@@ -193,8 +202,54 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
+  const deleteConfirmation = (row) => {
+    if (row != null) {
+      setDeleteConfirmationState(row);
+    }
+    setDeletePopup(true);
+  };
+
+  //TODO add delete request and link to API
+  const deleteRow = (row) => {
+    setDataTEST(dataTEST.filter((current) => current.id !== row.original.id));
+    setDeletePopup(false);
+  };
+
   return (
     <>
+      {/* Project delete confirmation modal */}
+      <Modal trigger={deletePopup} setTrigger={setDeletePopup}>
+        <div className="select-container">
+          <div className="grid1">
+            <h3>
+              Are you sure you want to delete:{" "}
+              {deleteConfirmationState?.original?.project}
+              {"?"}
+            </h3>
+          </div>
+          <div className="grid2">
+            <button
+              style={{ background: "#FF2530" }}
+              className="project-btn"
+              onClick={() => {
+                deleteRow(deleteConfirmationState);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+          <div className="aiend grid2">
+            <button
+              className="project-btn"
+              onClick={() => setDeletePopup(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* New project Modal */}
       <Project
         trigger={projectPopup}
         setTrigger={setProjectPopup}
@@ -236,6 +291,7 @@ const Dashboard = () => {
                   FILTER
                   PLACEHOLDER="Filter by Employee"
                   leftClickCell={childAddMemberFormData}
+                  minRows={0}
                 />
               </div>
             </div>
@@ -257,6 +313,7 @@ const Dashboard = () => {
                   PLACEHOLDER="Filter by Employee"
                   leftClickCell={childTeamLeadSelect}
                   rightClickCell={childRemoveMemberFormData}
+                  minRows={0}
                 />
               </div>
             </div>
@@ -283,29 +340,61 @@ const Dashboard = () => {
         </form>
       </Project>
 
+      {/* Main help modal */}
+      <Modal trigger={helpPopup} setTrigger={setHelpPopup}>
+        <div className="grid2">
+          <h2 className="marginless" style={{ marginBottom: "7px" }}>
+            HELP
+          </h2>
+          <div
+            className="grid2"
+            style={{
+              border: "solid #9A9B9C 1px",
+              padding: "10px",
+            }}
+          >
+            <p1>- Click NEW PROJECT button to create a new Project.</p1>
+            <p1>- Left click on a project in the table to view or edit it.</p1>
+            <p1>- Right click on a project in the table to delete it.</p1>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Main */}
       <div className="dashboard-container">
         <div className="blue-bar"></div>
         <h4 className="page-title">DASHBOARD</h4>
         <div className="project-container">
           <div className="project-top-container">
             <h3>Projects</h3>
-            <button
-              className="project-btn"
-              onClick={() => setProjectPopup(true)}
-            >
-              New project
-            </button>
+            <div style={{ display: "flex" }}>
+              <button
+                className="project-btn"
+                onClick={() => setProjectPopup(true)}
+              >
+                New project
+              </button>
+              <button
+                className="project-btn"
+                onClick={() => setHelpPopup(true)}
+              >
+                <FontAwesomeIcon icon={faQuestion} style={{ height: "13px" }} />
+              </button>
+            </div>
           </div>
           <div className="project-table-container">
             <Basictable
               COLUMNS={COLUMNS}
-              DATA={DATATEST}
+              DATA={dataTEST}
               FILTER
               PLACEHOLDER="Filter by Project, Description or Team Lead"
+              deletePopup={deleteConfirmation}
+              minRows={0}
             />
           </div>
         </div>
 
+        {/* Pie charts */}
         <div className="chart-container">
           <div className="pie-wrapper">
             <h2>Tickets by Priority</h2>

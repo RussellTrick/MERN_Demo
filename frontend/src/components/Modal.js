@@ -4,7 +4,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import "./Project.css";
 import ProjectCSS from "./Project.module.css";
 
-function Project(props) {
+function Modal(props) {
   return props.trigger ? (
     <div className="new-project-container">
       <div className="new-project-inner">
@@ -12,7 +12,6 @@ function Project(props) {
           className="close-btn"
           onClick={() => {
             props.setTrigger(false);
-            props.setState(props.defaultFormData);
           }}
         >
           <FontAwesomeIcon className={ProjectCSS.FontAwesomeIcon} icon={faX} />
@@ -25,4 +24,4 @@ function Project(props) {
   );
 }
 
-export default Project;
+export default Modal;

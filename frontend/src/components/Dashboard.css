@@ -105,6 +105,11 @@ body{
     letter-spacing: 4px;
     border: solid white;
     background: #009B83;
+    margin: 3px;
+}
+
+.aiend{
+    align-items: flex-end;
 }
 
 .project-btn:hover{
@@ -176,6 +181,10 @@ textarea{
     width: 312px;
     height: 20vh;
     overflow: auto; 
+}
+
+.marginless{
+    margin: 0;
 }
 
 

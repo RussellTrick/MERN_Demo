@@ -36,8 +36,7 @@ const Basictable = (props) => {
           setFilter={setGlobalFilter}
           placeholder={props.PLACEHOLDER}
         />
-      ) : null}
-
+      ) : null}{" "}
       <div className={TableCSS.container}>
         <table {...getTableProps()}>
           <thead>
@@ -58,9 +57,9 @@ const Basictable = (props) => {
               return (
                 <tr
                   {...row.getRowProps()}
-                  onClick={() => {
-                    console.log(" row click ", row);
-                  }}
+                  onContextMenu={
+                    props.deletePopup ? () => props.deletePopup(row) : null
+                  }
                 >
                   {row.cells.map((cell) => {
                     return (
