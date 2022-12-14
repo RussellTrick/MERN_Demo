@@ -40,7 +40,10 @@ const SELECTIONCOLUMNS = [{ Header: "DEVELOPERS", accessor: "reporter" }];
 
 const TEAMLEADCOLUMNS = [{ Header: "TEAM LEAD", accessor: "member" }];
 
-// TODO create api call
+// TODO: create api call
+// sendRequest().then(setProjectState).then(()=>{navigate('/bugs/');});
+// OR sendRequest().then(setProjectState).then(()=>{navigate('/bugs/?p=OBJECTID');});
+
 const DATATEST = [
   {
     id: 1,

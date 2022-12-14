@@ -1,17 +1,17 @@
 .dashboard-container{
-    padding: 1rem;
     padding-top: 0;
 }
 
 .page-title{
     padding-bottom: 4rem;
     color: white;
+    padding-left: 1rem;
 }
 
 .blue-bar{
     background-color: #13242C;
     position: absolute;
-    width: 100vw;
+    width: 100%;
     top: 0;
     left: 0;
     z-index: -100;
@@ -106,6 +106,7 @@ body{
     border: solid white;
     background: #009B83;
     margin: 3px;
+    justify-content: center;
 }
 
 .aiend{
