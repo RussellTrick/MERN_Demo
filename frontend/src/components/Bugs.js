@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Basictable from "./Basictable";
-import { COLUMNS } from "./Bugcolumns";
-import DATA from "./MOCK_DATA.json";
 import "./Bugs.css";
 
+const COLUMNS = [
+  { Header: "Name", accessor: "Name" },
+  { Header: "Description", accessor: "Description" },
+  { Header: "Created", accessor: "Created" },
+  { Header: "Team Lead", accessor: "TeamLead" },
+];
 const COLUMNS2 = [{ Header: "DESCRIPTION", accessor: "title" }];
 
 const Bugs = () => {
+  const [projectData, setProjectData] = useState([]);
+  const [bugData, setBugData] = useState([]);
   return (
     <div className="container">
       <h4 className="page-title">BUGS</h4>
@@ -25,7 +31,7 @@ const Bugs = () => {
             className="table-container max-width"
             style={{ marginBottom: "4rem" }}
           >
-            <Basictable COLUMNS={COLUMNS} DATA={DATA} />
+            <Basictable COLUMNS={COLUMNS} DATA={projectData} />
           </div>
           {/* Bug description section */}
           <div className="gridbox">
@@ -47,7 +53,7 @@ const Bugs = () => {
               </button>
             </div>
             <div className="table-container">
-              <Basictable COLUMNS={COLUMNS2} DATA={DATA} />
+              <Basictable COLUMNS={COLUMNS2} DATA={bugData} />
             </div>
             <div className="btn-wrapper column">
               <button

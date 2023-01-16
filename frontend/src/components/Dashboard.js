@@ -28,8 +28,6 @@ const critical = urgencyCount["critical"]
   : 0;
 const normal = urgencyCount["normal"] ? parseInt(urgencyCount["normal"]) : 0;
 
-// const total = low + critical + normal;
-
 const COLUMNS = [
   { Header: "PROJECT", accessor: "project" },
   { Header: "DESCRIPTION", accessor: "description" },
