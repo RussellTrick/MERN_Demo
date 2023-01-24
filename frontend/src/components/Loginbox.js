@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import "./Loginbox.css";
 import { useNavigate } from "react-router";
-import axios from "axios";
-const baseURL = "http://localhost:3001/api/v1";
+import userAPI from "../services/UserService";
 
 const Loginbox = () => {
   const [formData, setForm] = useState({
@@ -21,13 +20,8 @@ const Loginbox = () => {
 
   async function onSubmit(e) {
     e.preventDefault();
-    axios({
-      method: "post",
-      url: baseURL + "/users/signin",
-      data: formData,
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err.response));
+
+    userAPI.SignIn(formData);
 
     setForm({ password: "" });
     navigate("/");

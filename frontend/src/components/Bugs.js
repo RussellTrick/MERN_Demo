@@ -7,12 +7,14 @@ const COLUMNS = [
   { Header: "Description", accessor: "Description" },
   { Header: "Created", accessor: "Created" },
   { Header: "Team Lead", accessor: "TeamLead" },
+  ``,
 ];
 const COLUMNS2 = [{ Header: "DESCRIPTION", accessor: "title" }];
 
-const Bugs = () => {
+const Bugs = (projectState) => {
   const [projectData, setProjectData] = useState([]);
   const [bugData, setBugData] = useState([]);
+
   return (
     <div className="container">
       <h4 className="page-title">BUGS</h4>
