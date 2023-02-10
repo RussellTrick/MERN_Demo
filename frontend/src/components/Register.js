@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import UserService from "../services/UserService";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=*[0-9]).{8,24}$/;
 
@@ -7,8 +8,6 @@ const Register = () => {
   const errRef = useRef();
 
   const [user, setUser] = useState("");
-  const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
 
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
@@ -36,44 +35,132 @@ const Register = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd, matchPwd]);
+  }, [pwd, matchPwd]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const v2 = PWD_REGEX.test(pwd);
+    if (!v2) {
+      setErrMsg("Invalid Entry");
+      return;
+    }
+    // TODO: SignUp API
+    try {
+      const response = await UserService.SignUp(user, pwd);
+      console.log(response.data);
+      console.log(response.accessToken);
+      console.log(JSON.stringify(response));
+      setSuccess(true);
+      //TODO: clear input fields
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No server response");
+      } else if (err.response?.status === 409) {
+        setErrMsg("Email already in use");
+      } else {
+        setErrMsg("Registration failed");
+        console.log(err);
+      }
+      errRef.current.focus();
+    }
+  };
 
   return (
-    <section>
-      <p
-        ref={errRef}
-        className={errMsg ? "errmsg" : "offscreen"}
-        aria-live="assertive"
-      >
-        {errMsg}
-      </p>
-      <h2>Register</h2>
-      <form>
-        <label htmlFor="username">Email:</label>
-        <input
-          type="email"
-          id="username"
-          ref={userRef}
-          autoComplete="off"
-          onChange={(e) => setUser(e.target.value)}
-          required
-          aria-invalid={validName ? "false" : "true"}
-          aria-describedby="uidnote"
-          onFocus={() => setUserFocus(true)}
-          onBlur={() => setUserFocus(false)}
-        />
-        <p
-          id="uidnote"
-          className={
-            userFocus && user && !validName ? "instructions" : "offscreen"
-          }
-        >
-          4 to 24 characters. <br />
-          Must begin with a letter. <br />
-          Letters, numbers, underscores, hyphens allowed.
-        </p>
-      </form>
-    </section>
+    <>
+      {success ? (
+        <section>
+          <h1>Account successfully created!</h1>
+          <p>
+            <a href="#">Sign In</a>
+          </p>
+        </section>
+      ) : (
+        <section>
+          <p
+            ref={errRef}
+            className={errMsg ? "errmsg" : "offscreen"}
+            aria-live="assertive"
+          >
+            {errMsg}
+          </p>
+          <h2>Register</h2>
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="username">Email:</label>
+            <input
+              type="email"
+              id="username"
+              ref={userRef}
+              onChange={(e) => setUser(e.target.value)}
+              autoComplete="off"
+              required
+            />
+
+            <label
+              htmlFor="
+        pwd"
+            >
+              Password:
+            </label>
+            <input
+              type="password"
+              id="pwd"
+              ref={userRef}
+              onChange={(e) => setPwd(e.target.value)}
+              required
+              aria-invalid={validPwd ? "false" : "true"}
+              aria-describedby="pwdnote"
+              onFocus={() => setPwdFocus(true)}
+              onBlur={() => setPwdFocus(false)}
+            />
+            <p
+              id="pwdnote"
+              className={pwdFocus && !validPwd ? "instructions" : "offscren"}
+            >
+              8 to 24 characters.
+              <br />
+              Must include an Uppercase letter, a number.
+            </p>
+
+            <label
+              htmlFor="
+        confirm_pwd"
+            >
+              Confirm Password:
+            </label>
+            <input
+              type="password"
+              id="confirm_pwd"
+              ref={userRef}
+              onChange={(e) => setMatchPwd(e.target.value)}
+              required
+              aria-invalid={validMatch ? "false" : "true"}
+              aria-describedby="confirmnote"
+              onFocus={() => setMatchFocus(true)}
+              onBlur={() => setMatchFocus(false)}
+            />
+            <p
+              id="pwdnote"
+              className={
+                matchFocus && !validMatch ? "instructions" : "offscren"
+              }
+            >
+              Passwords much match.
+            </p>
+
+            <button disabled={!validPwd || !validMatch ? true : false}>
+              Sign up
+            </button>
+          </form>
+          <p>
+            Already registered?
+            <br />
+            <span>
+              <a href="#">Sign in</a>
+            </span>
+          </p>
+        </section>
+      )}
+    </>
   );
 };
 

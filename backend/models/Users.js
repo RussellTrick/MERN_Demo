@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
     default: [],
   },
+  Salt: {
+    type: String,
+    required: true,
+  },
   Role: {
     type: String,
     required: true,
@@ -32,6 +36,7 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.pre("save", async function (next) {
   if (this.isModified("Password")) {
+    //hash password with salt
     const hash = await bcrypt.hash(this.Password, 10);
     this.Password = hash;
   }
