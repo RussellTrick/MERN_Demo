@@ -9,7 +9,7 @@ function Navbar() {
   return (
     <div className="nav">
       <ul>
-        <NavLink className="nav_link" to="/" end>
+        <NavLink className="nav_link" to="/dashboard" end>
           <div className="img-container">
             <FontAwesomeIcon className="FontAwesomeIcon" icon={faChartSimple} />
             Dashboard

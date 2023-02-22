@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Loginbox.css";
 import { useNavigate } from "react-router";
-import userAPI from "../services/UserService";
+import { SignIn } from "../services/UserService";
 
 const Loginbox = () => {
   const [formData, setForm] = useState({
@@ -21,10 +21,10 @@ const Loginbox = () => {
   async function onSubmit(e) {
     e.preventDefault();
 
-    userAPI.SignIn(formData);
+    SignIn(formData);
 
     setForm({ password: "" });
-    navigate("/");
+    navigate("/dashboard");
   }
 
   return (

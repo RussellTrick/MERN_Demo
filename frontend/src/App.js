@@ -3,25 +3,30 @@ import Loginbox from "./components/Loginbox";
 import { Routes, Route } from "react-router-dom";
 import Bugs from "./components/Bugs";
 import Dashboard from "./components/Dashboard";
-import Navbar from "./components/Navbar";
 import { useState } from "react";
+import Layout from "./components/Layout";
+import LoginLayout from "./components/LoginLayout";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   const [projectState, setProjectState] = useState([]);
 
   return (
-    <div className="container">
-      <Navbar />
-      <div>
-        <Routes>
-          <Route
-            path="/"
-            element={<Dashboard setProjectState={setProjectState} />}
-          />
-          <Route path="/bugs" element={<Bugs projectState={projectState} />} />
-        </Routes>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<LoginLayout />}>
+        <Route path="/login" element={<Loginbox />} />
+      </Route>
+
+      {/* <Route element={<RequireAuth />}> */}
+      <Route path="/" element={<Layout />}>
+        <Route
+          path="/dashboard"
+          element={<Dashboard setProjectState={setProjectState} />}
+        />
+        <Route path="/bugs" element={<Bugs projectState={projectState} />} />
+      </Route>
+      {/* </Route> */}
+    </Routes>
   );
 }
 
