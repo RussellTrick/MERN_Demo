@@ -1,5 +1,4 @@
 const UserModel = require("../models/Users");
-const bcrypt = require("bcrypt");
 const { sendError } = require("../utils/helper");
 const jwt = require("jsonwebtoken");
 
@@ -26,7 +25,7 @@ exports.signIn = async (req, res) => {
   if (!isMatched) return sendError(res, "Passwords do not match.");
 
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "7d",
   });
 
   res.json({
