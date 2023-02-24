@@ -7,6 +7,7 @@ import { useState } from "react";
 import Layout from "./components/Layout";
 import LoginLayout from "./components/LoginLayout";
 import RequireAuth from "./components/RequireAuth";
+import Register from "./components/Register";
 
 function App() {
   const [projectState, setProjectState] = useState([]);
@@ -15,6 +16,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginLayout />}>
         <Route path="/login" element={<Loginbox />} />
+        <Route path="/register" element={<Register />} />
       </Route>
 
       {/* <Route element={<RequireAuth />}> */}

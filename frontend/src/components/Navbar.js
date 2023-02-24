@@ -7,7 +7,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 function Navbar() {
   return (
-    <div className="nav">
+    <nav className="nav">
       <ul>
         <NavLink className="nav_link" to="/dashboard" end>
           <div className="img-container">
@@ -32,7 +32,7 @@ function Navbar() {
           <FontAwesomeIcon className="FontAwesomeIcon" icon={faGithub} />
         </div>
       </a>
-    </div>
+    </nav>
   );
 }
 

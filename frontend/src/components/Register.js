@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import UserService from "../services/UserService";
+import { SignUp } from "../services/UserService";
 
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=*[0-9]).{8,24}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=[0-9]).{8,24}$/;
 
 const Register = () => {
   const userRef = useRef();
@@ -46,7 +46,7 @@ const Register = () => {
     }
     // TODO: SignUp API
     try {
-      const response = await UserService.SignUp(user, pwd);
+      const response = await SignUp(user, pwd);
       console.log(response.data);
       console.log(response.accessToken);
       console.log(JSON.stringify(response));
@@ -155,7 +155,7 @@ const Register = () => {
             Already registered?
             <br />
             <span>
-              <a href="#">Sign in</a>
+              <a href="/login">Sign in</a>
             </span>
           </p>
         </section>

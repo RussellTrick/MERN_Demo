@@ -52,13 +52,20 @@ const Loginbox = () => {
         </div>
 
         <div>
-          <a href="#" className="forgot-password">
+          <a href="#" className="forgot-password" style={{ color: "#4070F5" }}>
             Forgot password?
           </a>
         </div>
 
         <input type="submit" className="btn-submit"></input>
       </form>
+
+      <div className="register-link">
+        Don't have an account?
+        <a href="/register" style={{ color: "#4070F5" }}>
+          Signup now
+        </a>
+      </div>
     </div>
   );
 };
