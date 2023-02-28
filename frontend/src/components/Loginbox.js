@@ -37,7 +37,7 @@ const Loginbox = () => {
             name="email"
             required=" "
             onChange={handleChange}
-          ></input>
+          />
           <label>Email</label>
         </div>
 
@@ -47,7 +47,7 @@ const Loginbox = () => {
             name="password"
             required=" "
             onChange={handleChange}
-          ></input>
+          />
           <label>Password</label>
         </div>
 

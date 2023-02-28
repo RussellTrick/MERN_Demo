@@ -3,6 +3,10 @@
 * {
   font-family: "Outfit", sans-serif;
 }
+body {
+  background: #172031;
+  color: white;
+}
 
 .login-form {
   position: absolute;
@@ -32,11 +36,11 @@
   padding: 10px 0;
   font-size: 16px;
   color: #fff;
-  margin-bottom: 30px;
   border: none;
   border-bottom: 1px solid #fff;
   outline: none;
   background: transparent;
+  margin-bottom: 30px;
 }
 
 .login-form .user-box label {
@@ -50,14 +54,8 @@
   transition: 0.5s;
 }
 
+.login-form .user-box input:valid ~ label,
 .login-form .user-box input:focus ~ label {
-  top: -20px;
-  left: 0;
-  color: #03e9f4;
-  font-size: 12px;
-}
-
-.login-form .user-box input:valid ~ label {
   top: -20px;
   left: 0;
   color: #03e9f4;

@@ -1,40 +1,40 @@
-.container{
-    display: flex;
-    border: 2px solid grey;
-    border-radius: 5px;
-    margin-bottom: 5px;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    background: #313235;
+.container {
+  display: flex;
+  border: 2px solid grey;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: #313235;
 }
 
-.filterlabel{
-    border-right: 2px solid grey;
-    border-radius: 5px 0px 0px 5px;
-    background: #3D3E42;
-    padding: 4px;
-    height: stretch;
-    margin: 0 !important;
+.filterlabel {
+  border-right: 2px solid grey;
+  border-radius: 5px 0px 0px 5px;
+  background: #3d3e42;
+  padding: 4px;
+  height: stretch;
+  margin: 0 !important;
 }
 
-input[type=text] {
-    width: calc(100% - 100px);
-    background: transparent;
-    border-radius: 5px;
-    border: none !important;
-    color: white;
-    font-size: 16px;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
+.textInput {
+  width: calc(100% - 100px);
+  background: transparent;
+  border-radius: 5px;
+  border: none !important;
+  color: white;
+  font-size: 16px;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
-  input[type=text]:focus {
-    outline: none;
-    caret-color: white;
-  }
+.textInput:focus {
+  outline: none;
+  caret-color: white;
+}
 
-  .FontAwesomeIcon{
-    display: flex;
-    margin:auto;
-  }
+.FontAwesomeIcon {
+  display: flex;
+  margin: auto;
+}

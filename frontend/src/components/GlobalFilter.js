@@ -14,6 +14,7 @@ export const GlobalFilter = ({ filter, setFilter, placeholder }) => {
         icon={faMagnifyingGlass}
       />
       <input
+        className={FilterCSS.textInput}
         type="text"
         id="filter"
         placeholder={placeholder}
