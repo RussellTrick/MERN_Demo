@@ -1,54 +1,79 @@
-import React, { useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import "./Loginbox.css";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SignIn } from "../services/UserService";
+import useAuth from "../hooks/useAuth";
 
 const Loginbox = () => {
-  const [formData, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
+  const { setAuth } = useAuth();
+  const userRef = useRef();
+  const errRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/login";
 
-  const handleChange = (e) => {
-    setForm({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [user, setUser] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [user, pwd]);
 
   async function onSubmit(e) {
     e.preventDefault();
 
-    SignIn(formData);
+    console.log(user, pwd);
 
-    setForm({ password: "" });
-    navigate("/dashboard");
+    const response = SignIn({ setErrMsg }, user, pwd);
+    const accessToken = response?.data?.accessToken;
+    setAuth({ user, pwd, accessToken });
+
+    setPwd("");
+
+    navigate(from, { replace: true });
   }
 
   return (
-    <div className="login-form">
+    <section className="login-form">
       <h2>Login</h2>
+
+      <p
+        ref={errRef}
+        className={errMsg ? "errmsg" : "offscreen"}
+        aria-live="assertive"
+      >
+        {errMsg}
+      </p>
+
       <form onSubmit={onSubmit}>
         <div className="user-box">
           <input
             type="text"
             name="email"
-            required=" "
-            onChange={handleChange}
+            id="email"
+            ref={userRef}
+            required
+            onChange={(e) => setUser(e.target.value)}
+            value={user}
           />
-          <label>Email</label>
+          <label htmlFor="email">Email</label>
         </div>
 
         <div className="user-box">
           <input
             type="password"
             name="password"
-            required=" "
-            onChange={handleChange}
+            id="password"
+            required
+            onChange={(e) => setPwd(e.target.value)}
+            value={pwd}
           />
-          <label>Password</label>
+          <label htmlFor="password">Password</label>
         </div>
 
         <div>
@@ -63,10 +88,10 @@ const Loginbox = () => {
       <div className="register-link">
         Don't have an account?
         <a href="/register" style={{ color: "#4070F5" }}>
-          Signup now
+          &nbsp;Signup now
         </a>
       </div>
-    </div>
+    </section>
   );
 };
 

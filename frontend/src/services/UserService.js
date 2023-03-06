@@ -1,13 +1,25 @@
 import axios from "../api/axios";
 
-export function SignIn(data) {
+export function SignIn({ setErrmsg }, user, pwd) {
   axios({
     method: "post",
     url: axios.baseURL + "/users/signin",
-    data: data,
+    Email: user,
+    Password: pwd,
+    withCredentials: true,
   })
     .then((res) => console.log(res))
-    .catch((err) => console.log(err.response));
+    .catch(function (err) {
+      if (!err?.response) {
+        setErrmsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrmsg("Missing Email or Password");
+      } else if (err.response?.status === 401) {
+        setErrmsg("Unauthorised");
+      } else {
+        setErrmsg("Login Failed");
+      }
+    });
 }
 
 export function SignOut(data) {}

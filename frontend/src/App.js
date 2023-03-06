@@ -19,15 +19,15 @@ function App() {
         <Route path="/register" element={<Register />} />
       </Route>
 
-      {/* <Route element={<RequireAuth />}> */}
-      <Route path="/" element={<Layout />}>
-        <Route
-          path="/dashboard"
-          element={<Dashboard setProjectState={setProjectState} />}
-        />
-        <Route path="/bugs" element={<Bugs projectState={projectState} />} />
+      <Route element={<RequireAuth />}>
+        <Route path="/" element={<Layout />}>
+          <Route
+            path="/dashboard"
+            element={<Dashboard setProjectState={setProjectState} />}
+          />
+          <Route path="/bugs" element={<Bugs projectState={projectState} />} />
+        </Route>
       </Route>
-      {/* </Route> */}
     </Routes>
   );
 }
