@@ -3,10 +3,21 @@ const jwt = require("jsonwebtoken");
 // Middleware to protect routes
 const protectRoute = async (req, res, next) => {
   try {
-    // Get the token from the Authorization header
-    const token = req.headers.authorization.split(" ")[1];
+    // Get the token from the Authorization header or HTTP cookie
+    let token = "";
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    } else if (req.cookies && req.cookies.token) {
+      token = req.cookies.token;
+    }
 
     // Verify the token
+    if (!token) {
+      throw new Error("Token not found");
+    }
     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
     // Add the user to the request object

@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const connection = require("./db");
 require("dotenv").config();
 
-//datbase connection
+//database connection
 connection();
 
 const cors = require("cors");

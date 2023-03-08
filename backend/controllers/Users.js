@@ -1,6 +1,7 @@
 const UserModel = require("../models/Users");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
 
 exports.register = async (req, res, next) => {
   try {
@@ -31,13 +32,14 @@ exports.login = async (req, res, next) => {
       expiresIn: "7d",
     });
 
+    res.cookie("token", token, { httpOnly: true, secure: true });
+
     res.json({
       success: true,
       user: {
         name: user.firstName,
         id: user._id,
         email: user.email,
-        token: token,
         projects: user.projects,
       },
     });

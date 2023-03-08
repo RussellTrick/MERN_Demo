@@ -4,3 +4,9 @@ const BASEURL = "http://localhost:3001/api/v1";
 export default axios.create({
   baseURL: BASEURL,
 });
+
+export const axiosPrivate = axios.create({
+  baseURL: BASEURL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
+});
