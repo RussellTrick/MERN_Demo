@@ -1,6 +1,6 @@
 const UserModel = require("../models/Users");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 
 exports.register = async (req, res, next) => {
@@ -19,6 +19,7 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    console.log({ email }, { password });
     const user = await UserModel.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
