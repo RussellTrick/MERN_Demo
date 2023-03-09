@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -18,6 +19,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 app.use("/api/v1/users", userRouter);
 
 app.listen(PORT, () => {

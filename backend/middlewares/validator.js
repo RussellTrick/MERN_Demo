@@ -6,8 +6,8 @@ exports.validateUser = [
     .not()
     .isEmpty()
     .withMessage("Name is required")
-    .isLength({ min: 3, max: 25 })
-    .withMessage("Name must be between 3 and 25 characters long"),
+    .isLength({ min: 3 })
+    .withMessage("Name must be at least 3 characters long"),
   check("email").normalizeEmail().isEmail().withMessage("Email is invalid"),
   check("password")
     .trim()

@@ -28,10 +28,11 @@ const Loginbox = () => {
     e.preventDefault();
 
     console.log(user, pwd);
-
+    //TODO fix
     const response = SignIn({ setErrMsg }, user, pwd);
-    const accessToken = response?.data?.accessToken;
-    setAuth({ user, pwd, accessToken });
+    const token = response?.data?.token;
+    console.log(token);
+    setAuth({ user, pwd, token });
 
     setPwd("");
 

@@ -2,37 +2,32 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  email: {
+  Email: {
     type: String,
     required: true,
     unique: true,
-    field: "Email",
   },
-  firstName: {
+  FirstName: {
+    type: String,
+  },
+  LastName: {
+    type: String,
+  },
+  Password: {
     type: String,
     required: true,
-    field: "FirstName",
   },
-  lastName: {
-    type: String,
-    required: true,
-    field: "LastName",
-  },
-  password: {
-    type: String,
-    required: true,
-    field: "Password",
-  },
-  projects: {
+  Projects: {
     type: Array,
-    field: "Projects",
     default: [],
   },
-  role: {
+  Role: {
     type: String,
-    required: true,
-    field: "Role",
+    default: "developer",
+  },
+  Hashtag: {
+    type: String,
   },
 });
 
-module.exports = mongoose.model("Member", userSchema);
+module.exports = mongoose.model("User", userSchema, "Member");

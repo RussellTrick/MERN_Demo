@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SignUp } from "../services/UserService";
 
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=[0-9]).{8,24}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,24}$/;
 
 const Register = () => {
   const userRef = useRef();
@@ -27,8 +27,11 @@ const Register = () => {
   useEffect(() => {
     const result = PWD_REGEX.test(pwd);
     console.log(result);
-    console.log(pwd);
     setValidPwd(result);
+  }, [pwd]);
+
+  useEffect(() => {
+    console.log(pwd);
     const match = pwd === matchPwd;
     setValidMatch(match);
   }, [pwd, matchPwd]);
@@ -44,11 +47,10 @@ const Register = () => {
       setErrMsg("Invalid Entry");
       return;
     }
-    // TODO: SignUp API
     try {
-      const response = await SignUp(user, pwd);
+      const response = await SignUp({ setErrMsg }, user, pwd);
       console.log(response.data);
-      console.log(response.accessToken);
+      console.log(response.token);
       console.log(JSON.stringify(response));
       setSuccess(true);
       //TODO: clear input fields
@@ -71,7 +73,7 @@ const Register = () => {
         <section>
           <h1>Account successfully created!</h1>
           <p>
-            <a href="#">Sign In</a>
+            <a href="/login">Sign In</a>
           </p>
         </section>
       ) : (
@@ -104,7 +106,6 @@ const Register = () => {
             <input
               type="password"
               id="pwd"
-              ref={userRef}
               onChange={(e) => setPwd(e.target.value)}
               required
               aria-invalid={validPwd ? "false" : "true"}
@@ -130,7 +131,6 @@ const Register = () => {
             <input
               type="password"
               id="confirm_pwd"
-              ref={userRef}
               onChange={(e) => setMatchPwd(e.target.value)}
               required
               aria-invalid={validMatch ? "false" : "true"}
@@ -141,7 +141,7 @@ const Register = () => {
             <p
               id="pwdnote"
               className={
-                matchFocus && !validMatch ? "instructions" : "offscren"
+                matchFocus && !validMatch ? "instructions" : "offscreen"
               }
             >
               Passwords much match.

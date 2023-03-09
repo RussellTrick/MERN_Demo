@@ -4,8 +4,8 @@ const { protectRoute } = require("../middlewares/auth");
 const { validateUser, validate } = require("../middlewares/validator");
 const { register, login, getUsers } = require("../controllers/Users");
 
-router.post("/signup", validateUser, validate, register);
-router.post("/signin", login);
+router.post("/register", register);
+router.post("/login", login);
 router.get("/getusers", protectRoute, getUsers);
 
 router.get("/protected-route", protectRoute, (req, res) => {

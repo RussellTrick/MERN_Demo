@@ -5,10 +5,9 @@ const cookieParser = require("cookie-parser");
 
 exports.register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const user = new User({ email, password: hashedPassword });
+    const { Email, Password } = req.body;
+    const hashedPassword = await bcrypt.hash(Password, 10);
+    const user = new UserModel({ Email, Password: hashedPassword });
     await user.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
@@ -18,15 +17,15 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    console.log({ email }, { password });
-    const user = await UserModel.findOne({ email });
+    const { Email, Password } = req.body;
+    const user = await UserModel.findOne({ Email });
+
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json(console.log("401 Not Found"));
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(Password, user.Password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json(console.log("401 Invalid Password"));
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
@@ -38,10 +37,10 @@ exports.login = async (req, res, next) => {
     res.json({
       success: true,
       user: {
-        name: user.firstName,
+        name: user.FirstName,
         id: user._id,
-        email: user.email,
-        projects: user.projects,
+        email: user.Email,
+        projects: user.Projects,
       },
     });
   } catch (err) {
