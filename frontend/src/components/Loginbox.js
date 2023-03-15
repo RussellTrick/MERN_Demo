@@ -5,7 +5,7 @@ import { SignIn } from "../services/UserService";
 import useAuth from "../hooks/useAuth";
 
 const Loginbox = () => {
-  const { setAuth } = useAuth();
+  const { setAuth, auth } = useAuth();
   const userRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
@@ -28,11 +28,9 @@ const Loginbox = () => {
     e.preventDefault();
 
     console.log(user, pwd);
-    //TODO fix
-    const response = SignIn({ setErrMsg }, user, pwd);
-    const token = response?.data?.token;
-    console.log(token);
-    setAuth({ user, pwd, token });
+
+    await SignIn({ setErrMsg }, user, pwd);
+    setAuth({ user, pwd });
 
     setPwd("");
 

@@ -1,33 +1,21 @@
 const jwt = require("jsonwebtoken");
 
-// Middleware to protect routes
-const protectRoute = async (req, res, next) => {
-  try {
-    // Get the token from the Authorization header or HTTP cookie
-    let token = "";
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.token) {
-      token = req.cookies.token;
-    }
-
-    // Verify the token
-    if (!token) {
-      throw new Error("Token not found");
-    }
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-
-    // Add the user to the request object
-    req.user = decoded;
-
-    next();
-  } catch (error) {
-    console.error(error);
-    res.status(401).json({ message: "Unauthorized" });
+function checkAuth(req, res, next) {
+  console.log("checkAuth middleware called!");
+  const token = req.cookies.token;
+  if (!token) {
+    console.log("Token missing from cookie!");
+    return res.status(401).json({ message: "Token missing from cookie" });
   }
-};
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Token decoded successfully:", decoded);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    console.log("Error decoding token:", err.message);
+    return res.status(401).json({ message: "Invalid token" });
+  }
+}
 
-module.exports = { protectRoute };
+module.exports = { checkAuth };
