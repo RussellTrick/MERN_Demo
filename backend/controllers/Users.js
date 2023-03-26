@@ -52,6 +52,15 @@ exports.login = async (req, res, next) => {
   }
 };
 
+exports.logout = async (req, res, next) => {
+  try {
+    res.clearCookie("token");
+    res.json({ message: "User logged out successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getUsers = async (req, res) => {
   try {
     const users = await UserModel.find({});

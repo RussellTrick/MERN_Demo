@@ -11,6 +11,7 @@ connection();
 
 const cors = require("cors");
 const userRouter = require("./routes/Router");
+const projectRouter = require("./routes/projectRouter");
 
 app.use(express.json());
 app.use(
@@ -21,6 +22,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/projects", projectRouter);
 
 app.listen(PORT, () => {
   console.log("listening on http://localhost:" + PORT);

@@ -1,0 +1,18 @@
+const { Router } = require("express");
+const router = Router();
+const { checkAuth } = require("../middlewares/auth");
+const {
+  getProjectsByUserId,
+  getProjectById,
+  createProject,
+  updateProject,
+  deleteProject,
+} = require("../controllers/ProjectController");
+
+router.get("/", checkAuth, getProjectsByUserId);
+router.get("/:projectId", checkAuth, getProjectById);
+router.post("/", checkAuth, createProject);
+router.put("/:projectId", checkAuth, updateProject);
+router.delete("/:projectId", checkAuth, deleteProject);
+
+module.exports = router;

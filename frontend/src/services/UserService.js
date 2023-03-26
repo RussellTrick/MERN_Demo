@@ -31,8 +31,6 @@ export function SignIn({ setErrMsg }, user, pwd) {
     });
 }
 
-export function SignOut(data) {}
-
 export async function SignUp({ setErrMsg }, user, pwd) {
   const response = axios({
     method: "post",
@@ -53,4 +51,23 @@ export async function SignUp({ setErrMsg }, user, pwd) {
       }
     });
   return response;
+}
+
+export function SignOut({ setErrMsg }) {
+  axios
+    .post("/users/logout", null, { withCredentials: true })
+    .then(() => {
+      // Clear cookies or perform any other necessary cleanup
+      console.log("User signed out successfully");
+    })
+    .catch(function (err) {
+      console.error(err);
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorised");
+      } else {
+        setErrMsg("Logout Failed");
+      }
+    });
 }
