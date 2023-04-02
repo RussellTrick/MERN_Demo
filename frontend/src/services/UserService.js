@@ -58,6 +58,8 @@ export function SignOut({ setErrMsg }) {
     .post("/users/logout", null, { withCredentials: true })
     .then(() => {
       // Clear cookies or perform any other necessary cleanup
+      document.cookie =
+        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.log("User signed out successfully");
     })
     .catch(function (err) {

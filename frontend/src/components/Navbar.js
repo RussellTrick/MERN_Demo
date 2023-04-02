@@ -4,8 +4,18 @@ import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartSimple, faBug } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { SignOut } from "../services/UserService";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
+  const handleSignOut = () => {
+    SignOut({
+      setErrMsg: (msg) => console.log(msg),
+    });
+    navigate("/login");
+  };
+
   return (
     <nav className="nav">
       <ul>
@@ -22,6 +32,13 @@ function Navbar() {
           </div>
         </NavLink>
       </ul>
+
+      <button className="end" onClick={handleSignOut}>
+        <div className="img-container">
+          <FontAwesomeIcon className="FontAwesomeIcon" icon={faGithub} />
+        </div>
+      </button>
+
       <a
         className="end"
         href="https://github.com/RussellTrick"

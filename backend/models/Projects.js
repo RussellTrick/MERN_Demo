@@ -37,13 +37,5 @@ const ProjectSchema = new mongoose.Schema({
   },
 });
 
-ProjectSchema.save((error) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("User saved successfully");
-  }
-});
-
 const ProjectModel = mongoose.model("projects", ProjectSchema);
 module.exports = ProjectModel;

@@ -6,7 +6,7 @@ const { register, login, getUsers, logout } = require("../controllers/Users");
 router.post("/register", register);
 router.post("/login", login);
 router.get("/getusers", checkAuth, getUsers);
-router.get("/logout", logout);
+router.post("/logout", logout);
 
 router.get("/check-auth", checkAuth, async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);

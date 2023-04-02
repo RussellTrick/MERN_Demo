@@ -7,11 +7,12 @@ const {
   createProject,
   updateProject,
   deleteProject,
-} = require("../controllers/ProjectController");
+} = require("../controllers/Projects");
 
 router.get("/", checkAuth, getProjectsByUserId);
-router.get("/:projectId", checkAuth, getProjectById);
 router.post("/", checkAuth, createProject);
+
+router.get("/:projectId", checkAuth, getProjectById);
 router.put("/:projectId", checkAuth, updateProject);
 router.delete("/:projectId", checkAuth, deleteProject);
 

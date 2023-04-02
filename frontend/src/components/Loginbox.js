@@ -1,20 +1,24 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./Loginbox.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SignIn } from "../services/UserService";
 import useAuth from "../hooks/useAuth";
 
 const Loginbox = () => {
-  const { setAuth, auth } = useAuth();
+  const { setAuth, authenticated } = useAuth();
   const userRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/login";
 
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
+
+  useEffect(() => {
+    if (authenticated) {
+      navigate("/dashboard");
+    }
+  }, [authenticated, navigate]);
 
   useEffect(() => {
     userRef.current.focus();
@@ -34,7 +38,7 @@ const Loginbox = () => {
 
     setPwd("");
 
-    navigate(from, { replace: true });
+    navigate("/dashboard");
   }
 
   return (

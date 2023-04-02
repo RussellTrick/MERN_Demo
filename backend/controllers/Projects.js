@@ -1,10 +1,14 @@
-const Project = require("../models/Project");
+const Project = require("../models/Projects");
+const User = require("../models/Users");
 
 exports.getProjectsByUserId = async (req, res) => {
   const userId = req.user._id;
   try {
-    const projects = await Project.find({ userId });
-    res.status(200).json({ projects });
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ projects: user.Projects });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -26,10 +30,28 @@ exports.getProjectById = async (req, res) => {
 };
 
 exports.createProject = async (req, res) => {
-  const { title, description } = req.body;
+  const {
+    Title,
+    Description,
+    TeamLead,
+    Created,
+    Status,
+    Urgency,
+    Members,
+    Tickets,
+  } = req.body;
   const userId = req.user._id;
   try {
-    const project = new Project({ title, description, userId });
+    const project = new Project({
+      Title,
+      Description,
+      TeamLead,
+      Created,
+      Status,
+      Urgency,
+      Members,
+      Tickets,
+    });
     await project.save();
     res.status(201).json({ project });
   } catch (error) {
@@ -40,14 +62,34 @@ exports.createProject = async (req, res) => {
 
 exports.updateProject = async (req, res) => {
   const projectId = req.params.projectId;
-  const { title, description } = req.body;
+  if (!projectId) {
+    return res.status(404).json({ message: "Project ID missing from payload" });
+  }
+
+  const {
+    Title,
+    Description,
+    TeamLead,
+    Created,
+    Status,
+    Urgency,
+    Members,
+    Tickets,
+  } = req.body;
+
   try {
     let project = await Project.findById(projectId);
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-    project.title = title || project.title;
-    project.description = description || project.description;
+    if (Title) project.Title = Title;
+    if (Description) project.Description = Description;
+    if (TeamLead) project.TeamLead = TeamLead;
+    if (Created) project.Created = Created;
+    if (Status) project.Status = Status;
+    if (Urgency) project.Urgency = Urgency;
+    if (Members) project.Members = Members;
+    if (Tickets) project.Tickets = Tickets;
     await project.save();
     res.status(200).json({ project });
   } catch (error) {
