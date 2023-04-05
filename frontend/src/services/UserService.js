@@ -1,6 +1,6 @@
 import axios from "../api/axios";
 
-export function SignIn({ setErrMsg }, user, pwd) {
+export async function SignIn({ setErrMsg }, user, pwd, callback) {
   axios
     .post(
       "/users/login",
@@ -8,14 +8,10 @@ export function SignIn({ setErrMsg }, user, pwd) {
       { withCredentials: true }
     )
     .then((res) => {
-      console.log(res);
-      const cookies = res.headers["set-cookie"];
-      if (cookies) {
-        cookies.forEach((cookie) => {
-          document.cookie = cookie;
-        });
+      if (typeof callback === "function") {
+        console.log("callback called");
+        callback();
       }
-      console.log(cookies);
     })
     .catch(function (err) {
       console.error(err);
@@ -53,7 +49,7 @@ export async function SignUp({ setErrMsg }, user, pwd) {
   return response;
 }
 
-export function SignOut({ setErrMsg }) {
+export function SignOut({ setErrMsg }, callback) {
   axios
     .post("/users/logout", null, { withCredentials: true })
     .then(() => {
@@ -61,6 +57,11 @@ export function SignOut({ setErrMsg }) {
       document.cookie =
         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.log("User signed out successfully");
+
+      if (typeof callback === "function") {
+        console.log("callback called");
+        callback();
+      }
     })
     .catch(function (err) {
       console.error(err);

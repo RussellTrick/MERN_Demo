@@ -5,7 +5,7 @@ import { SignIn } from "../services/UserService";
 import useAuth from "../hooks/useAuth";
 
 const Loginbox = () => {
-  const { setAuth, authenticated } = useAuth();
+  const { auth, checkAuth } = useAuth();
   const userRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
@@ -15,10 +15,10 @@ const Loginbox = () => {
   const [errMsg, setErrMsg] = useState("");
 
   useEffect(() => {
-    if (authenticated) {
+    if (auth.authenticated) {
       navigate("/dashboard");
     }
-  }, [authenticated, navigate]);
+  }, [auth.authenticated, navigate]);
 
   useEffect(() => {
     userRef.current.focus();
@@ -28,17 +28,13 @@ const Loginbox = () => {
     setErrMsg("");
   }, [user, pwd]);
 
-  async function onSubmit(e) {
+  function onSubmit(e) {
     e.preventDefault();
-
-    console.log(user, pwd);
-
-    await SignIn({ setErrMsg }, user, pwd);
-    setAuth({ user, pwd });
-
-    setPwd("");
-
-    navigate("/dashboard");
+    SignIn({ setErrMsg }, user, pwd, () => {
+      checkAuth();
+      setPwd("");
+      navigate("/dashboard");
+    });
   }
 
   return (

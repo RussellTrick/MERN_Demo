@@ -6,14 +6,22 @@ import { faChartSimple, faBug } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { SignOut } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 function Navbar() {
+  const { checkAuth } = useAuth();
   const navigate = useNavigate();
+
   const handleSignOut = () => {
-    SignOut({
-      setErrMsg: (msg) => console.log(msg),
-    });
-    navigate("/login");
+    SignOut(
+      {
+        setErrMsg: (msg) => console.log(msg),
+      },
+      () => {
+        checkAuth();
+        navigate("/login");
+      }
+    );
   };
 
   return (

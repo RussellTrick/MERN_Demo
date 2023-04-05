@@ -1,39 +1,37 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import axios from "../api/axios";
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({});
-  const [authenticated, setAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [auth, setAuth] = useState({ authenticated: false });
 
   useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = () => {
     axios
       .get("/users/check-auth", { withCredentials: true })
       .then((res) => {
         console.log(res);
         if (res.data.authenticated) {
-          setAuthenticated(true);
+          setAuth((prevAuth) => ({ ...prevAuth, authenticated: true }));
         } else {
-          setAuthenticated(false);
+          setAuth((prevState) => ({ ...prevState, authenticated: false }));
         }
+      })
+      .then(() => {
+        console.log(auth.authenticated);
       })
       .catch((err) => {
         console.error(err);
-        setAuthenticated(false);
-      })
-      .finally(() => {
-        setLoading(false);
+        setAuth((prevState) => ({ ...prevState, authenticated: false }));
       });
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  };
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, authenticated }}>
+    <AuthContext.Provider value={{ auth, setAuth, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
