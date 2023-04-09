@@ -1,6 +1,6 @@
 import axios from "../api/axios";
 
-export function getProjectsByUserId({ setErrMsg }) {
+export function getProjectsByUserId() {
   axios
     .get("/projects", { withCredentials: true })
     .then((res) => {

@@ -1,12 +1,10 @@
 import { createContext, useState, useEffect } from "react";
-import projectService from "../services/ProjectService";
+import { getProjectsByUserId } from "../services/ProjectService";
 
 const ProjectContext = createContext({});
 
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [projectStateUpdate, setProjectStateUpdate] = useState();
   const [projectState, setProjectState] = useState({
     Title: { value: "", default: "Untitled" },
@@ -19,27 +17,14 @@ export const ProjectProvider = ({ children }) => {
     Tickets: { value: [], default: [] },
   });
 
-  useEffect(() => {
-    projectService
-      .getProjectsByUserId()
-      .then((data) => {
-        setProjects(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setError("Error fetching data. Please try again later.");
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
+  const fetchProjects = async () => {
+    try {
+      const data = await getProjectsByUserId();
+      setProjects(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <ProjectContext.Provider
@@ -50,6 +35,7 @@ export const ProjectProvider = ({ children }) => {
         setProjectState,
         projectStateUpdate,
         setProjectStateUpdate,
+        fetchProjects,
       }}
     >
       {children}

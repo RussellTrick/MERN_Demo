@@ -5,22 +5,19 @@ import { SignIn } from "../services/UserService";
 import useAuth from "../hooks/useAuth";
 
 const Loginbox = () => {
-  const { auth, checkAuth } = useAuth();
+  const { checkAuth } = useAuth();
   const userRef = useRef();
   const errRef = useRef();
   const navigate = useNavigate();
-
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const authenticated = checkAuth();
 
   useEffect(() => {
-    if (auth.authenticated) {
+    if (authenticated) {
       navigate("/dashboard");
     }
-  }, [auth.authenticated, navigate]);
-
-  useEffect(() => {
     userRef.current.focus();
   }, []);
 
@@ -31,7 +28,6 @@ const Loginbox = () => {
   function onSubmit(e) {
     e.preventDefault();
     SignIn({ setErrMsg }, user, pwd, () => {
-      checkAuth();
       setPwd("");
       navigate("/dashboard");
     });

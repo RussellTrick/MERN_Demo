@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 function Navbar() {
-  const { checkAuth } = useAuth();
+  const { checkAuthApi } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -18,7 +18,7 @@ function Navbar() {
         setErrMsg: (msg) => console.log(msg),
       },
       () => {
-        checkAuth();
+        checkAuthApi();
         navigate("/login");
       }
     );

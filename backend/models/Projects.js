@@ -10,7 +10,7 @@ const ProjectSchema = new mongoose.Schema({
     required: true,
   },
   TeamLead: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   Created: {
@@ -26,16 +26,18 @@ const ProjectSchema = new mongoose.Schema({
     required: true,
   },
   Members: {
-    type: Array,
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Member",
     required: true,
     default: [],
   },
   Tickets: {
-    type: Array,
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Ticket",
     required: true,
     default: [],
   },
 });
 
-const ProjectModel = mongoose.model("projects", ProjectSchema);
+const ProjectModel = mongoose.model("Project", ProjectSchema);
 module.exports = ProjectModel;

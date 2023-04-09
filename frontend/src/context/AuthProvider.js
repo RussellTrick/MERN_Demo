@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import axios from "../api/axios";
 
 const AuthContext = createContext({});
@@ -6,11 +6,12 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({ authenticated: false });
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
   const checkAuth = () => {
+    const isAuthenticated = localStorage.getItem("authenticated") === "true";
+    return isAuthenticated;
+  };
+
+  const checkAuthApi = () => {
     axios
       .get("/users/check-auth", { withCredentials: true })
       .then((res) => {
@@ -31,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, checkAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth, checkAuth, checkAuthApi }}>
       {children}
     </AuthContext.Provider>
   );

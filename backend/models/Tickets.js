@@ -22,7 +22,7 @@ const TicketSchema = new mongoose.Schema({
     required: true,
   },
   Member: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
 });
@@ -35,5 +35,5 @@ TicketSchema.save((error) => {
   }
 });
 
-const TicketModel = mongoose.model("projects", TicketModel);
+const TicketModel = mongoose.model("Ticket", TicketModel);
 module.exports = TicketModel;

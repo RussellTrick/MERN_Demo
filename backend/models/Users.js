@@ -25,9 +25,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "developer",
   },
-  Hashtag: {
-    type: String,
-  },
 });
 
 module.exports = mongoose.model("User", userSchema, "Member");

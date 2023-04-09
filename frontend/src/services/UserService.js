@@ -8,6 +8,7 @@ export async function SignIn({ setErrMsg }, user, pwd, callback) {
       { withCredentials: true }
     )
     .then((res) => {
+      localStorage.setItem("authenticated", "true");
       if (typeof callback === "function") {
         console.log("callback called");
         callback();
@@ -57,6 +58,7 @@ export function SignOut({ setErrMsg }, callback) {
       document.cookie =
         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.log("User signed out successfully");
+      localStorage.removeItem("authenticated");
 
       if (typeof callback === "function") {
         console.log("callback called");

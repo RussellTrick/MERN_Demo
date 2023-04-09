@@ -56,7 +56,7 @@ const Selectiontable = (props) => {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr title={row?.original?.email} {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
                       <td

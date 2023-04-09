@@ -10,6 +10,7 @@ import Selectiontable from "./Selectiontable";
 import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import useProjects from "../hooks/useProjects";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -105,6 +106,8 @@ const DATATEST = [
 const dateNow = format(new Date(), "dd/MM/yyyy");
 
 const Dashboard = () => {
+  const { projects } = useProjects();
+
   const [projectPopup, setProjectPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [helpPopup, setHelpPopup] = useState(false);
@@ -114,6 +117,7 @@ const Dashboard = () => {
   // Disable right click, context menu
   useEffect(() => {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
+    console.log(projects);
 
     return () => {
       window.removeEventListener("contextmenu", (e) => e.preventDefault());
@@ -386,7 +390,7 @@ const Dashboard = () => {
           <div className="project-table-container">
             <Basictable
               COLUMNS={COLUMNS}
-              DATA={dataTEST}
+              DATA={projects || dataTEST}
               FILTER
               PLACEHOLDER="Filter by Project, Description or Team Lead"
               deletePopup={deleteConfirmation}

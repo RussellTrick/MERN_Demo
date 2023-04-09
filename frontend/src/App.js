@@ -7,22 +7,25 @@ import Layout from "./components/Layout";
 import LoginLayout from "./components/LoginLayout";
 import RequireAuth from "./components/RequireAuth";
 import Register from "./components/Register";
+import { ProjectProvider } from "./context/ProjectsContext";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LoginLayout />}>
-        <Route path="/login" element={<Loginbox />} />
-        <Route path="/register" element={<Register />} />
-      </Route>
-
-      <Route element={<RequireAuth />}>
-        <Route path="/" element={<Layout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/bugs" element={<Bugs />} />
+    <ProjectProvider>
+      <Routes>
+        <Route path="/" element={<LoginLayout />}>
+          <Route path="/login" element={<Loginbox />} />
+          <Route path="/register" element={<Register />} />
         </Route>
-      </Route>
-    </Routes>
+
+        <Route element={<RequireAuth />}>
+          <Route path="/" element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/bugs" element={<Bugs />} />
+          </Route>
+        </Route>
+      </Routes>
+    </ProjectProvider>
   );
 }
 
