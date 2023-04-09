@@ -106,7 +106,7 @@ const DATATEST = [
 const dateNow = format(new Date(), "dd/MM/yyyy");
 
 const Dashboard = () => {
-  const { projects } = useProjects();
+  const { projects, fetchProjects } = useProjects();
 
   const [projectPopup, setProjectPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
@@ -117,6 +117,7 @@ const Dashboard = () => {
   // Disable right click, context menu
   useEffect(() => {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
+    fetchProjects();
     console.log(projects);
 
     return () => {

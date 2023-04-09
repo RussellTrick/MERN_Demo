@@ -28,7 +28,7 @@ exports.login = async (req, res, next) => {
       return res.status(401).json(console.log("401 Invalid Password"));
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     console.log(token);
@@ -65,6 +65,23 @@ exports.getUsers = async (req, res) => {
   try {
     const users = await UserModel.find({});
     res.json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.addProjectToUser = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const projectId = req.body.projectId;
+
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $addToSet: { Projects: projectId } },
+      { new: true }
+    );
+
+    res.json({ success: true, user: updatedUser });
   } catch (err) {
     next(err);
   }

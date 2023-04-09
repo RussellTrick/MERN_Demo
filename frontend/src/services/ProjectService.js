@@ -4,8 +4,9 @@ export function getProjectsByUserId() {
   axios
     .get("/projects", { withCredentials: true })
     .then((res) => {
-      console.log(res);
-      return res;
+      const { data } = res;
+      console.log(data);
+      return data;
     })
     .catch((err) => {
       console.error(err);

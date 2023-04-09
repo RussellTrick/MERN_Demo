@@ -17,7 +17,7 @@ export const ProjectProvider = ({ children }) => {
     Tickets: { value: [], default: [] },
   });
 
-  const fetchProjects = async () => {
+  const fetchProjectIDs = async () => {
     try {
       const data = await getProjectsByUserId();
       setProjects(data);
@@ -35,7 +35,7 @@ export const ProjectProvider = ({ children }) => {
         setProjectState,
         projectStateUpdate,
         setProjectStateUpdate,
-        fetchProjects,
+        fetchProjectIDs,
       }}
     >
       {children}

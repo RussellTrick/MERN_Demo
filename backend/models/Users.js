@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   Projects: {
-    type: Array,
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
   Role: {
