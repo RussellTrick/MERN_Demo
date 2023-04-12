@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import { getProjectsByUserId } from "../services/ProjectService";
 
 const ProjectContext = createContext({});
@@ -20,6 +20,7 @@ export const ProjectProvider = ({ children }) => {
   const fetchProjectIDs = async () => {
     try {
       const data = await getProjectsByUserId();
+      console.log(data);
       setProjects(data);
     } catch (error) {
       console.error(error);

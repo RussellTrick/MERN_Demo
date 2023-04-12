@@ -1,5 +1,6 @@
 const Project = require("../models/Projects");
 const User = require("../models/Users");
+const mongoose = require("mongoose");
 
 exports.getProjectsByUserId = async (req, res) => {
   const userId = req.user._id;
@@ -17,6 +18,7 @@ exports.getProjectsByUserId = async (req, res) => {
 
 exports.getProjectById = async (req, res) => {
   const projectId = req.params.projectId;
+  console.log(projectId);
   try {
     const project = await Project.findById(projectId);
     if (!project) {

@@ -11,6 +11,7 @@ import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import useProjects from "../hooks/useProjects";
+import { getProjects } from "../services/ProjectService";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -30,9 +31,9 @@ const critical = urgencyCount["critical"]
 const normal = urgencyCount["normal"] ? parseInt(urgencyCount["normal"]) : 0;
 
 const COLUMNS = [
-  { Header: "PROJECT", accessor: "project" },
-  { Header: "DESCRIPTION", accessor: "description" },
-  { Header: "TEAM LEAD", accessor: "teamlead" },
+  { Header: "TITLE", accessor: "Title" },
+  { Header: "DESCRIPTION", accessor: "Description" },
+  { Header: "TEAM LEAD", accessor: "TeamLead" },
 ];
 
 const SELECTIONCOLUMNS = [{ Header: "DEVELOPERS", accessor: "reporter" }];
@@ -106,24 +107,51 @@ const DATATEST = [
 const dateNow = format(new Date(), "dd/MM/yyyy");
 
 const Dashboard = () => {
-  const { projects, fetchProjects } = useProjects();
+  const { projects, fetchProjectIDs } = useProjects();
 
+  const [errMsg, setErrMsg] = useState();
   const [projectPopup, setProjectPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [helpPopup, setHelpPopup] = useState(false);
   const inputTitle = useRef(null);
   const inputDescription = useRef(null);
+  const [projectTableData, setProjectTableData] = useState([]);
+  const [isProjectsReady, setIsProjectsReady] = useState(false); // Initialize flag with false
 
-  // Disable right click, context menu
+  //Disable right click, context menu and load intial projects
   useEffect(() => {
     window.addEventListener("contextmenu", (e) => e.preventDefault());
-    fetchProjects();
+
+    const fetchData = async () => {
+      try {
+        await fetchProjectIDs(); // Fetch projects
+        setIsProjectsReady(true); // Set flag to indicate projects is ready
+      } catch (error) {
+        // Handle any errors that occur during fetchProjectIDs()
+        console.error(error);
+      }
+    };
+
+    fetchData();
     console.log(projects);
+    console.log(projectTableData);
 
     return () => {
       window.removeEventListener("contextmenu", (e) => e.preventDefault());
     };
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isProjectsReady) {
+        // Call getProjects() only when projects is ready
+        const projectsData = await getProjects({ setErrMsg }, projects); // Pass updated projects state to getProjects()
+        setProjectTableData(projectsData);
+      }
+    };
+
+    fetchData();
+  }, [isProjectsReady]);
 
   const defaultFormData = {
     id: 1,
@@ -391,7 +419,7 @@ const Dashboard = () => {
           <div className="project-table-container">
             <Basictable
               COLUMNS={COLUMNS}
-              DATA={projects || dataTEST}
+              DATA={projectTableData || dataTEST}
               FILTER
               PLACEHOLDER="Filter by Project, Description or Team Lead"
               deletePopup={deleteConfirmation}

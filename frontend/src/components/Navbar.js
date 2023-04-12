@@ -2,7 +2,11 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartSimple, faBug } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChartSimple,
+  faBug,
+  faPowerOff,
+} from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { SignOut } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
@@ -41,22 +45,24 @@ function Navbar() {
         </NavLink>
       </ul>
 
-      <button className="end" onClick={handleSignOut}>
+      <div>
+        <a
+          href="https://github.com/RussellTrick"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <div className="img-container">
+            <FontAwesomeIcon className="FontAwesomeIcon" icon={faGithub} />
+          </div>
+        </a>
         <div className="img-container">
-          <FontAwesomeIcon className="FontAwesomeIcon" icon={faGithub} />
+          <button className="signout" onClick={handleSignOut}>
+            <div>
+              <FontAwesomeIcon className="FontAwesomeIcon" icon={faPowerOff} />
+            </div>
+          </button>
         </div>
-      </button>
-
-      <a
-        className="end"
-        href="https://github.com/RussellTrick"
-        target="_blank"
-        rel="noreferrer"
-      >
-        <div className="img-container">
-          <FontAwesomeIcon className="FontAwesomeIcon" icon={faGithub} />
-        </div>
-      </a>
+      </div>
     </nav>
   );
 }

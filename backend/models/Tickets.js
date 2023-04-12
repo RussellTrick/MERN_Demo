@@ -35,5 +35,5 @@ TicketSchema.save((error) => {
   }
 });
 
-const TicketModel = mongoose.model("Ticket", TicketModel);
+const TicketModel = mongoose.model("Ticket", TicketModel, "Ticket");
 module.exports = TicketModel;
