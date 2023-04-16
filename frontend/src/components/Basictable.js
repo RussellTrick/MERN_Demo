@@ -58,8 +58,9 @@ const Basictable = (props) => {
                 <tr
                   {...row.getRowProps()}
                   onContextMenu={
-                    props.deletePopup ? () => props.deletePopup(row) : null
+                    props.onContextMenu ? () => props.onContextMenu(row) : null
                   }
+                  onClick={props.onClick ? () => props.onClick(row) : null}
                 >
                   {row.cells.map((cell) => {
                     return (

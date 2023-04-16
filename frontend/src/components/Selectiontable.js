@@ -60,8 +60,14 @@ const Selectiontable = (props) => {
                   {row.cells.map((cell) => {
                     return (
                       <td
-                        onClick={() => props.leftClickCell(cell.value)}
-                        onContextMenu={() => props.rightClickCell(cell.value)}
+                        onClick={
+                          props.onClick ? () => props.onClick(cell.value) : null
+                        }
+                        onContextMenu={
+                          props.onContextMenu
+                            ? () => props.onContextMenu(cell.value)
+                            : null
+                        }
                         {...cell.getCellProps()}
                       >
                         {cell.render("Cell")}
