@@ -181,14 +181,15 @@ const Dashboard = () => {
 
   const childRemoveMemberFormData = (childdata) => {
     const newFormData = { ...formData };
+    const memberIdToRemove = childdata?.original._id;
 
-    if (!newFormData.Members.some((item) => item.Members === childdata)) {
+    if (!memberIdToRemove) {
       return;
-    } else {
-      newFormData.Members = formData.Members.filter(
-        (item) => item.Members !== childdata
-      );
     }
+
+    newFormData.Members = formData.Members.filter(
+      (member) => member._id !== memberIdToRemove
+    );
 
     setFormData(newFormData);
   };
