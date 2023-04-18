@@ -5,7 +5,7 @@ const ProjectContext = createContext({});
 
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
-  const [projectStateUpdate, setProjectStateUpdate] = useState();
+  const [projectStateUpdate, setProjectStateUpdate] = useState([]);
   const [projectState, setProjectState] = useState({
     Title: { value: "", default: "Untitled" },
     Description: { value: "", default: "" },
@@ -20,7 +20,6 @@ export const ProjectProvider = ({ children }) => {
   const fetchProjectIDs = async () => {
     try {
       const data = await getProjectsByUserId();
-      console.log(data);
       setProjects(data);
     } catch (error) {
       console.error(error);

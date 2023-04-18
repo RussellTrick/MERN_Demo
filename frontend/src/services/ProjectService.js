@@ -5,7 +5,6 @@ export async function getProjectsByUserId() {
     .get("/projects", { withCredentials: true })
     .then((res) => {
       const { data } = res;
-      console.log(data);
       return data;
     })
     .catch((err) => {
@@ -17,7 +16,6 @@ export async function getProjectById({ setErrMsg }, projectId) {
   return axios
     .get(`/projects/${projectId}`, { withCredentials: true })
     .then((res) => {
-      console.log(res);
       return res;
     })
     .catch((err) => {

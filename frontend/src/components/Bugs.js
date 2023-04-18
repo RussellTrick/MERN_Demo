@@ -1,18 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Basictable from "./Basictable";
 import "./Bugs.css";
+import useProjects from "../hooks/useProjects";
+import { useNavigate } from "react-router-dom";
 
-const COLUMNS = [
-  { Header: "Name", accessor: "Name" },
-  { Header: "Description", accessor: "Description" },
-  { Header: "Created", accessor: "Created" },
-  { Header: "Team Lead", accessor: "TeamLead" },
+const PROJECTCOLUMNS = [
+  { Header: "TITLE", accessor: "Title" },
+  { Header: "DESCRIPTION", accessor: "Description" },
+  { Header: "CREATED", accessor: "Created" },
+  { Header: "TEAM LEAD", accessor: "TeamLead" },
 ];
-const COLUMNS2 = [{ Header: "DESCRIPTION", accessor: "title" }];
+const BUGCOLUMNS = [
+  { Header: "NAME", accessor: "Name" },
+  { Header: "DESCRIPTION", accessor: "Description" },
+  { Header: "STATUS", accessor: "Status" },
+  { Header: "URGENCY", accessor: "Urgency" },
+];
 
-const Bugs = (projectState) => {
+const Bugs = () => {
+  const { projectStateUpdate } = useProjects();
   const [projectData, setProjectData] = useState([]);
   const [bugData, setBugData] = useState([]);
+  const navigate = useNavigate();
+
+  const handleChooseProject = () => {
+    navigate("/dashboard");
+  };
 
   return (
     <div className="container">
@@ -22,9 +35,11 @@ const Bugs = (projectState) => {
       <div className="bugs-container">
         <div className="bugs-container-inner">
           <div className="bugs-title max-width">
-            <h1>Project title: </h1>
+            <h2>Project title: {projectStateUpdate[0]?.Title}</h2>
             <div className="btn-wrapper">
-              <button className="project-btn">Choose project</button>
+              <button className="project-btn" onClick={handleChooseProject}>
+                Choose project
+              </button>
               <button className="project-btn">?</button>
             </div>
           </div>
@@ -32,39 +47,18 @@ const Bugs = (projectState) => {
             className="table-container max-width"
             style={{ marginBottom: "4rem" }}
           >
-            <Basictable COLUMNS={COLUMNS} DATA={projectData} />
+            <Basictable COLUMNS={PROJECTCOLUMNS} DATA={projectStateUpdate} />
           </div>
           {/* Bug description section */}
-          <div className="gridbox">
-            <div className="bugs-title">
-              <h4>Bug title: </h4>
-              <h4>Urgency: </h4>
-              <h4>Status: </h4>
-              <h4>Reporter: </h4>
-            </div>
-
+          <div className="bugs-title max-width">
+            <h2>Bugs: </h2>
             <div className="btn-wrapper">
-              <button
-                className="project-btn btn-width"
-                style={{
-                  backgroundColor: "#FFA825",
-                }}
-              >
-                Edit
-              </button>
-            </div>
-            <div className="table-container">
-              <Basictable COLUMNS={COLUMNS2} DATA={bugData} />
-            </div>
-            <div className="btn-wrapper column">
-              <button
-                className="project-btn btn-width"
-                style={{ backgroundColor: "#FF2530" }}
-              >
-                Delete
-              </button>
               <button className="project-btn btn-width">Create</button>
+              <button className="project-btn">?</button>
             </div>
+          </div>
+          <div className="table-container max-width">
+            <Basictable COLUMNS={BUGCOLUMNS} DATA={bugData} />
           </div>
         </div>
       </div>

@@ -64,7 +64,10 @@ exports.logout = async (req, res, next) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    const users = await UserModel.find({});
+    const users = await UserModel.find(
+      {},
+      { Email: 1, FirstName: 1, LastName: 1, _id: 1 }
+    );
     res.json(users);
   } catch (err) {
     next(err);

@@ -5,7 +5,7 @@ import { GlobalFilter } from "./GlobalFilter";
 
 const Selectiontable = (props) => {
   const columns = props.COLUMNS;
-  const data = props.DATA;
+  const data = props?.DATA;
 
   const {
     getTableProps,
@@ -56,16 +56,19 @@ const Selectiontable = (props) => {
             {rows.map((row) => {
               prepareRow(row);
               return (
-                <tr title={row?.original?.email} {...row.getRowProps()}>
+                <tr
+                  title={row?.original?.Email ? row?.original?.Email : null}
+                  {...row.getRowProps()}
+                >
                   {row.cells.map((cell) => {
                     return (
                       <td
                         onClick={
-                          props.onClick ? () => props.onClick(cell.value) : null
+                          props.onClick ? () => props.onClick(row) : null
                         }
                         onContextMenu={
                           props.onContextMenu
-                            ? () => props.onContextMenu(cell.value)
+                            ? () => props.onContextMenu(row)
                             : null
                         }
                         {...cell.getCellProps()}

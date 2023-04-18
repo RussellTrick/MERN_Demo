@@ -1,4 +1,4 @@
-import axios from "../api/axios";
+import axios, { axiosPrivate } from "../api/axios";
 
 export async function SignIn({ setErrMsg }, user, pwd, callback) {
   axios
@@ -75,4 +75,17 @@ export function SignOut({ setErrMsg }, callback) {
         setErrMsg("Logout Failed");
       }
     });
+}
+
+export async function getUsers() {
+  return axiosPrivate.get("/users/getusers").catch(function (err) {
+    console.error(err);
+    if (!err?.response) {
+      console.log("No Server Response", err.response);
+    } else if (err.response?.status === 401) {
+      console.log("Unauthorised", err.response);
+    } else {
+      console.log("Uncaught Error", err.response);
+    }
+  });
 }

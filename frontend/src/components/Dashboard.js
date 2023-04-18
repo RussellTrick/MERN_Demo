@@ -11,7 +11,9 @@ import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import useProjects from "../hooks/useProjects";
-import { getProjects } from "../services/ProjectService";
+import { getProjects, createProject } from "../services/ProjectService";
+import { useNavigate } from "react-router-dom";
+import { getUsers } from "../services/UserService";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -30,84 +32,25 @@ const critical = urgencyCount["critical"]
   : 0;
 const normal = urgencyCount["normal"] ? parseInt(urgencyCount["normal"]) : 0;
 
-const COLUMNS = [
+const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
   { Header: "DESCRIPTION", accessor: "Description" },
   { Header: "TEAM LEAD", accessor: "TeamLead" },
 ];
 
-const SELECTIONCOLUMNS = [{ Header: "DEVELOPERS", accessor: "reporter" }];
-
-const TEAMLEADCOLUMNS = [{ Header: "TEAM LEAD", accessor: "member" }];
-
-// TODO: create api call
-// sendRequest().then(setProjectState).then(()=>{navigate('/bugs/');});
-// OR sendRequest().then(setProjectState).then(()=>{navigate('/bugs/?p=OBJECTID');});
-
-const DATATEST = [
-  {
-    id: 1,
-    project: "Tic Tac Toe Game",
-    description: "tictactoe game in java",
-    teamlead: "",
-  },
-  {
-    id: 2,
-    project: "Dog game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 3,
-    project: "Cat game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 4,
-    project: "Developer portal",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 5,
-    project: "Tic Tac Toe Game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 6,
-    project: "Tic Tac Toe Game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 7,
-    project: "Tic Tac Toe Game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 8,
-    project: "Tic Tac Toe Game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-  {
-    id: 9,
-    project: "Tic Tac Toe Game",
-    description: "tictactoe game in java",
-    teamlead: "Owain",
-  },
-];
-// ----------------------------------------------------------------
+const SELECTIONCOLUMNS = [{ Header: "FULLNAME", accessor: "FullName" }];
 
 // TODO Create different pie charts
 
-const dateNow = format(new Date(), "dd/MM/yyyy");
-
 const Dashboard = () => {
-  const { projects, fetchProjectIDs } = useProjects();
+  const {
+    projects,
+    fetchProjectIDs,
+    projectState,
+    projectStateUpdate,
+    setProjectState,
+    setProjectStateUpdate,
+  } = useProjects();
 
   const [errMsg, setErrMsg] = useState();
   const [projectPopup, setProjectPopup] = useState(false);
@@ -116,7 +59,9 @@ const Dashboard = () => {
   const inputTitle = useRef(null);
   const inputDescription = useRef(null);
   const [projectTableData, setProjectTableData] = useState([]);
-  const [isProjectsReady, setIsProjectsReady] = useState(false); // Initialize flag with false
+  const [allUsers, setAllUsers] = useState([]);
+  const [loading, isLoading] = useState(false);
+  const navigate = useNavigate();
 
   //Disable right click, context menu and load intial projects
   useEffect(() => {
@@ -125,46 +70,59 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         await fetchProjectIDs(); // Fetch projects
-        setIsProjectsReady(true); // Set flag to indicate projects is ready
+        isLoading(true); // Set flag to indicate projects is ready
       } catch (error) {
         // Handle any errors that occur during fetchProjectIDs()
         console.error(error);
       }
     };
-
     fetchData();
-    console.log(projects);
-    console.log(projectTableData);
+
+    const getUsersData = async () => {
+      try {
+        const response = await getUsers(); // Call getUsers() and await response
+
+        // Merge first and last name for each user
+        const mergedUsers = response.data.map((user) => {
+          return {
+            ...user,
+            FullName: `${user.FirstName} ${user.LastName}`,
+          };
+        });
+
+        setAllUsers(mergedUsers); // Set all users with merged data
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getUsersData(); // Call getUsersData()
 
     return () => {
       window.removeEventListener("contextmenu", (e) => e.preventDefault());
     };
   }, []);
 
+  //Ensure project is loaded before setting projectTableData
   useEffect(() => {
     const fetchData = async () => {
-      if (isProjectsReady) {
+      if (loading) {
         // Call getProjects() only when projects is ready
         const projectsData = await getProjects({ setErrMsg }, projects); // Pass updated projects state to getProjects()
         setProjectTableData(projectsData);
       }
     };
-
     fetchData();
-  }, [isProjectsReady]);
+  }, [loading]);
 
   const defaultFormData = {
-    id: 1,
-    project: "",
-    description: "",
-    teamlead: "Not selected",
-    members: [],
-    status: "incomplete",
-    urgency: "critical",
-    date: { dateNow },
+    Project: "",
+    Description: "",
+    TeamLead: "",
+    TeamLeadName: "Not Selected",
+    Members: [],
+    Status: "incomplete",
+    Urgency: "critical",
   };
-
-  const [dataTEST, setDataTEST] = useState(DATATEST);
 
   const [deleteConfirmationState, setDeleteConfirmationState] =
     useState(defaultFormData);
@@ -198,10 +156,24 @@ const Dashboard = () => {
   const childAddMemberFormData = (childdata) => {
     const newFormData = { ...formData };
 
-    if (newFormData.members.some((item) => item.member === childdata)) {
+    if (
+      newFormData.Members.some(
+        (item) => item.Email === childdata?.original.Email
+      )
+    ) {
       return;
     } else {
-      newFormData.members = [...formData.members, { member: childdata }];
+      newFormData.Members = [
+        ...formData.Members,
+        {
+          _id: childdata?.original._id,
+          FirstName: childdata?.original.FirstName,
+          LastName: childdata?.original.LastName,
+          Email: childdata?.original.Email,
+          FullName:
+            childdata?.original.FirstName + " " + childdata?.original.LastName,
+        },
+      ];
     }
 
     setFormData(newFormData);
@@ -210,11 +182,11 @@ const Dashboard = () => {
   const childRemoveMemberFormData = (childdata) => {
     const newFormData = { ...formData };
 
-    if (!newFormData.members.some((item) => item.member === childdata)) {
+    if (!newFormData.Members.some((item) => item.Members === childdata)) {
       return;
     } else {
-      newFormData.members = formData.members.filter(
-        (item) => item.member !== childdata
+      newFormData.Members = formData.Members.filter(
+        (item) => item.Members !== childdata
       );
     }
 
@@ -224,10 +196,11 @@ const Dashboard = () => {
   const childTeamLeadSelect = (childdata) => {
     const newFormData = { ...formData };
 
-    if (newFormData.teamlead.includes(childdata)) {
+    if (newFormData.TeamLead.includes(childdata?.original._id)) {
       return;
     } else {
-      newFormData.teamlead = childdata;
+      newFormData.TeamLead = childdata?.original?._id;
+      newFormData.TeamLeadName = childdata?.original?.FullName;
     }
 
     var z = document.getElementById("members");
@@ -240,13 +213,24 @@ const Dashboard = () => {
     if (row != null) {
       setDeleteConfirmationState(row);
     }
+
     setDeletePopup(true);
   };
 
   //TODO add delete request and link to API
   const deleteRow = (row) => {
-    setDataTEST(dataTEST.filter((current) => current.id !== row.original.id));
+    setProjectTableData(
+      projectTableData.filter((current) => current._id !== row.original._id)
+    );
     setDeletePopup(false);
+  };
+
+  const updateProjectTableDataByRowId = (row) => {
+    const arr = projectTableData.filter(
+      (item) => item._id === row.original._id
+    );
+    setProjectStateUpdate(arr);
+    navigate("/bugs");
   };
 
   return (
@@ -257,7 +241,7 @@ const Dashboard = () => {
           <div className="grid1">
             <h3>
               Are you sure you want to delete:{" "}
-              {deleteConfirmationState?.original?.project}
+              {deleteConfirmationState?.original?.Title}
               {"?"}
             </h3>
           </div>
@@ -319,12 +303,12 @@ const Dashboard = () => {
               <label title="Click to add member">Choose Members</label>
               <div className="new-project-table-container">
                 <Selectiontable
-                  DATA={DATA}
+                  DATA={allUsers}
                   COLUMNS={SELECTIONCOLUMNS}
                   HEADLESS
                   FILTER
                   PLACEHOLDER="Filter by Employee"
-                  leftClickCell={childAddMemberFormData}
+                  onClick={childAddMemberFormData}
                   minRows={0}
                 />
               </div>
@@ -336,17 +320,17 @@ const Dashboard = () => {
                 id="members"
                 style={{ color: "#FF2530" }}
               >
-                Team Lead: {formData.teamlead}
+                Team Lead: {formData?.TeamLeadName}
               </label>
               <div className="new-project-table-container">
                 <Selectiontable
-                  DATA={formData.members}
-                  COLUMNS={TEAMLEADCOLUMNS}
+                  DATA={formData.Members}
+                  COLUMNS={SELECTIONCOLUMNS}
                   HEADLESS
                   FILTER
                   PLACEHOLDER="Filter by Employee"
-                  leftClickCell={childTeamLeadSelect}
-                  rightClickCell={childRemoveMemberFormData}
+                  onClick={childTeamLeadSelect}
+                  onContextMenu={childRemoveMemberFormData}
                   minRows={0}
                 />
               </div>
@@ -418,12 +402,13 @@ const Dashboard = () => {
           </div>
           <div className="project-table-container">
             <Basictable
-              COLUMNS={COLUMNS}
-              DATA={projectTableData || dataTEST}
+              COLUMNS={PROJECTCOLUMNS}
+              DATA={projectTableData}
               FILTER
               PLACEHOLDER="Filter by Project, Description or Team Lead"
-              deletePopup={deleteConfirmation}
               minRows={0}
+              onContextMenu={deleteConfirmation}
+              onClick={updateProjectTableDataByRowId}
             />
           </div>
         </div>
