@@ -89,3 +89,15 @@ export async function getUsers() {
     }
   });
 }
+
+export async function getUserById(id) {
+  return axiosPrivate
+    .get(`/users/${id}`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+}

@@ -5,7 +5,6 @@ import DATA from "./MOCK_DATA.json";
 import Basictable from "./Basictable";
 import Project from "./Project";
 import { useState } from "react";
-import { format } from "date-fns";
 import Selectiontable from "./Selectiontable";
 import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +12,7 @@ import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import useProjects from "../hooks/useProjects";
 import { getProjects, createProject } from "../services/ProjectService";
 import { useNavigate } from "react-router-dom";
-import { getUsers } from "../services/UserService";
+import { getUsers, getUserById } from "../services/UserService";
 
 //Map out data into array
 const urgencyData = DATA.map(function (index) {
@@ -35,7 +34,7 @@ const normal = urgencyCount["normal"] ? parseInt(urgencyCount["normal"]) : 0;
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
   { Header: "DESCRIPTION", accessor: "Description" },
-  { Header: "TEAM LEAD", accessor: "TeamLead" },
+  { Header: "TEAM LEAD", accessor: "TeamLeadName" },
 ];
 
 const SELECTIONCOLUMNS = [{ Header: "FULLNAME", accessor: "FullName" }];
@@ -106,9 +105,24 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (loading) {
-        // Call getProjects() only when projects is ready
-        const projectsData = await getProjects({ setErrMsg }, projects); // Pass updated projects state to getProjects()
-        setProjectTableData(projectsData);
+        const projectsData = await getProjects({ setErrMsg }, projects);
+
+        // Map over the array of projects and update each one to include the team lead's name
+        const projectsWithTeamLeadNames = await Promise.all(
+          projectsData.map(async (project) => {
+            // Call getUserById to get the team lead's name
+            const response = project?.TeamLead
+              ? await getUserById(project?.TeamLead)
+              : { FirstName: "" };
+            // Return the updated project object with the team lead's name added
+            return {
+              ...project,
+              TeamLeadName: `${response?.user?.firstName} ${response?.user?.lastName}`,
+            };
+          })
+        );
+
+        setProjectTableData(projectsWithTeamLeadNames);
       }
     };
     fetchData();
@@ -230,6 +244,8 @@ const Dashboard = () => {
     const arr = projectTableData.filter(
       (item) => item._id === row.original._id
     );
+    const date = new Date(arr[0]?.Created);
+    arr[0].CreatedFormatted = date.toLocaleDateString();
     setProjectStateUpdate(arr);
     navigate("/bugs");
   };

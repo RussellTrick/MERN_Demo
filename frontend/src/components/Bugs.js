@@ -3,12 +3,14 @@ import Basictable from "./Basictable";
 import "./Bugs.css";
 import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
   { Header: "DESCRIPTION", accessor: "Description" },
-  { Header: "CREATED", accessor: "Created" },
-  { Header: "TEAM LEAD", accessor: "TeamLead" },
+  { Header: "CREATED", accessor: "CreatedFormatted" },
+  { Header: "TEAM LEAD", accessor: "TeamLeadName" },
 ];
 const BUGCOLUMNS = [
   { Header: "NAME", accessor: "Name" },
@@ -40,7 +42,9 @@ const Bugs = () => {
               <button className="project-btn" onClick={handleChooseProject}>
                 Choose project
               </button>
-              <button className="project-btn">?</button>
+              <button className="project-btn">
+                <FontAwesomeIcon icon={faQuestion} style={{ height: "13px" }} />
+              </button>
             </div>
           </div>
           <div
@@ -54,7 +58,9 @@ const Bugs = () => {
             <h2>Bugs: </h2>
             <div className="btn-wrapper">
               <button className="project-btn btn-width">Create</button>
-              <button className="project-btn">?</button>
+              <button className="project-btn">
+                <FontAwesomeIcon icon={faQuestion} style={{ height: "13px" }} />
+              </button>
             </div>
           </div>
           <div className="table-container max-width">

@@ -1,12 +1,19 @@
 const router = require("express").Router();
 const { checkAuth } = require("../middlewares/auth");
 
-const { register, login, getUsers, logout } = require("../controllers/Users");
+const {
+  register,
+  login,
+  getUsers,
+  logout,
+  getUserById,
+} = require("../controllers/Users");
 
 router.post("/register", register);
 router.post("/login", login);
 router.get("/getusers", checkAuth, getUsers);
 router.post("/logout", logout);
+router.get("/:id", checkAuth, getUserById);
 
 router.get("/check-auth", checkAuth, async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);

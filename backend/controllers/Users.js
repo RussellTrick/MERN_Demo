@@ -90,3 +90,25 @@ exports.addProjectToUser = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getUserById = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      success: true,
+      user: {
+        firstName: user.FirstName,
+        lastName: user.LastName,
+        id: user._id,
+        email: user.Email,
+        projects: user.Projects,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
