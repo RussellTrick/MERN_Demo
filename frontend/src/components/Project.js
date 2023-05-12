@@ -12,7 +12,9 @@ function Project(props) {
           className="close-btn"
           onClick={() => {
             props.setTrigger(false);
-            props.setState(props.defaultFormData);
+            if (props.defaultFormData && props.setState) {
+              props.setState(props.defaultFormData);
+            }
           }}
         >
           <FontAwesomeIcon className={ProjectCSS.FontAwesomeIcon} icon={faX} />
@@ -20,9 +22,7 @@ function Project(props) {
         {props.children}
       </div>
     </div>
-  ) : (
-    ""
-  );
+  ) : null;
 }
 
 export default Project;

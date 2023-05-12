@@ -55,6 +55,7 @@ const Dashboard = () => {
   const [projectPopup, setProjectPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [helpPopup, setHelpPopup] = useState(false);
+  const [editPopup, setEditPopup] = useState(false);
   const inputTitle = useRef(null);
   const inputDescription = useRef(null);
   const [projectTableData, setProjectTableData] = useState([]);
@@ -117,7 +118,7 @@ const Dashboard = () => {
             // Return the updated project object with the team lead's name added
             return {
               ...project,
-              TeamLeadName: `${response?.user?.firstName} ${response?.user?.lastName}`,
+              TeamLeadName: `${response?.user?.FirstName} ${response?.user?.LastName}`,
             };
           })
         );
@@ -224,6 +225,60 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
+  const updateMembersWithFullNames = () => {
+    const mergedUsers = projectStateUpdate?.Members.map((user) => {
+      return {
+        ...user,
+        FullName: `${user?.FirstName} ${user?.LastName}`,
+      };
+    });
+    setProjectStateUpdate(...projectStateUpdate, mergedUsers);
+  };
+
+  const editTeamLeadSelect = (childdata) => {
+    const newFormData = { ...projectStateUpdate };
+
+    if (newFormData.TeamLead.includes(childdata?.original._id)) {
+      return;
+    } else {
+      newFormData.TeamLead = childdata?.original?._id;
+      newFormData.TeamLeadName = childdata?.original?.FullName;
+    }
+
+    var z = document.getElementById("editProjectTeamLead");
+    z.style.color = "#009B83";
+
+    setProjectStateUpdate(newFormData);
+  };
+
+  const editMemberAdd = (childdata) => {
+    console.log(projectStateUpdate);
+    const newFormData = { ...projectStateUpdate };
+    console.log(newFormData);
+    if (
+      newFormData.Members.some(
+        (item) => item.Email === childdata?.original.Email
+      )
+    ) {
+      return;
+    } else {
+      newFormData.Members = [
+        ...projectStateUpdate?.Members,
+        {
+          _id: childdata?.original._id,
+          FirstName: childdata?.original.FirstName,
+          LastName: childdata?.original.LastName,
+          Email: childdata?.original.Email,
+          FullName:
+            childdata?.original.FirstName + " " + childdata?.original.LastName,
+        },
+      ];
+    }
+
+    setProjectStateUpdate(newFormData);
+    console.log(projectStateUpdate);
+  };
+
   const deleteConfirmation = (row) => {
     if (row != null) {
       setDeleteConfirmationState(row);
@@ -240,14 +295,29 @@ const Dashboard = () => {
     setDeletePopup(false);
   };
 
-  const updateProjectTableDataByRowId = (row) => {
+  const updateProjectTableDataByRowId = async (row) => {
     const arr = projectTableData.filter(
       (item) => item._id === row.original._id
     );
     const date = new Date(arr[0]?.Created);
     arr[0].CreatedFormatted = date.toLocaleDateString();
-    setProjectStateUpdate(arr);
-    navigate("/bugs");
+
+    const updatedMembers = await Promise.all(
+      arr[0].Members.map(async (member) => {
+        if (typeof member === "string") {
+          const response = await getUserById(member);
+          const { _id, FirstName, LastName, Email } = response.user;
+          const FullName = `${FirstName} ${LastName}`;
+          return { _id, FirstName, LastName, Email, FullName };
+        } else {
+          return member;
+        }
+      })
+    );
+
+    const updatedProjectState = { ...arr[0], Members: updatedMembers };
+    setProjectStateUpdate(updatedProjectState);
+    setEditPopup(true);
   };
 
   return (
@@ -367,6 +437,110 @@ const Dashboard = () => {
                 <option value="critical">Critical</option>
                 <option value="normal">Normal</option>
                 <option value="low">Low</option>
+              </select>
+            </div>
+
+            <button className="project-btn">Submit</button>
+          </div>
+        </form>
+      </Project>
+
+      {/* Edit Project Modal */}
+      <Project
+        trigger={editPopup}
+        setTrigger={setEditPopup}
+        state={formData}
+        setState={setFormData}
+      >
+        <h3>
+          Currently Editing:{" "}
+          {projectStateUpdate
+            ? projectStateUpdate.Title
+            : "Project failed to load"}
+        </h3>
+
+        <form onSubmit={handleSubmit}>
+          <div className="select-container">
+            <div className="grid1">
+              <label htmlFor="projectEdit">Title</label>
+              <input
+                required="required"
+                autoFocus
+                name="projectEdit"
+                defaultValue={projectStateUpdate?.Title}
+              ></input>
+            </div>
+
+            <div className="grid1">
+              <label htmlFor="descriptionEdit">Description</label>
+              <textarea
+                required="required"
+                name="descriptionEdit"
+                rows="6"
+                defaultValue={projectStateUpdate?.Description}
+              ></textarea>
+            </div>
+
+            <div className="grid2">
+              <label title="Click to add member">Choose Members</label>
+              <div className="new-project-table-container">
+                <Selectiontable
+                  DATA={allUsers}
+                  COLUMNS={SELECTIONCOLUMNS}
+                  HEADLESS
+                  FILTER
+                  PLACEHOLDER="Filter by Employee"
+                  onClick={editMemberAdd}
+                  minRows={0}
+                />
+              </div>
+            </div>
+
+            <div className="grid2">
+              <label
+                title="Left click to assign Team Lead | Right click to remove Members"
+                id="editProjectTeamLead"
+              >
+                Team Lead: {projectStateUpdate?.TeamLeadName}
+              </label>
+              <div className="new-project-table-container">
+                <Selectiontable
+                  DATA={
+                    projectStateUpdate.Members ? projectStateUpdate.Members : []
+                  }
+                  COLUMNS={SELECTIONCOLUMNS}
+                  HEADLESS
+                  FILTER
+                  PLACEHOLDER="Filter by Employee"
+                  onClick={editTeamLeadSelect}
+                  onContextMenu={childRemoveMemberFormData}
+                  minRows={0}
+                />
+              </div>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="editStatus">Status</label>
+              <select
+                onChange={handleAddFormChange}
+                name="editStatus"
+                defaultValue={projectStateUpdate.Status}
+              >
+                <option value="Incomplete">Incomplete</option>
+                <option value="Complete">Complete</option>
+              </select>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="editUrgency">Priority</label>
+              <select
+                onChange={handleAddFormChange}
+                name="editUrgency"
+                defaultValue={projectStateUpdate.Urgency}
+              >
+                <option value="Critical">Critical</option>
+                <option value="Normal">Normal</option>
+                <option value="Low">Low</option>
               </select>
             </div>
 

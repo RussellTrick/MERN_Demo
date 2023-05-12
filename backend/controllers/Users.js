@@ -101,11 +101,11 @@ exports.getUserById = async (req, res, next) => {
     res.json({
       success: true,
       user: {
-        firstName: user.FirstName,
-        lastName: user.LastName,
-        id: user._id,
-        email: user.Email,
-        projects: user.Projects,
+        _id: user._id,
+        FirstName: user.FirstName,
+        LastName: user.LastName,
+        Email: user.Email,
+        Projects: user.Projects,
       },
     });
   } catch (err) {

@@ -5,6 +5,8 @@ import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
+import Project from "./Project";
+import Selectiontable from "./Selectiontable";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
@@ -33,7 +35,7 @@ const Bugs = () => {
     <div className="container">
       <h4 className="page-title">BUGS</h4>
       <div className="blue-bar" />
-      {/* Project section*/}
+      {/* Project section */}
       <div className="bugs-container">
         <div className="bugs-container-inner">
           <div className="bugs-title max-width">
@@ -51,7 +53,10 @@ const Bugs = () => {
             className="table-container max-width"
             style={{ marginBottom: "4rem" }}
           >
-            <Basictable COLUMNS={PROJECTCOLUMNS} DATA={projectStateUpdate} />
+            <Basictable
+              COLUMNS={PROJECTCOLUMNS}
+              DATA={projectStateUpdate ? projectStateUpdate : []}
+            />
           </div>
           {/* Bug description section */}
           <div className="bugs-title max-width">
