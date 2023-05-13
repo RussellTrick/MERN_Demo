@@ -168,7 +168,7 @@ const Dashboard = () => {
     setProjectPopup(false);
   };
 
-  const childAddMemberFormData = (childdata) => {
+  const newProjectAddMember = (childdata) => {
     const newFormData = { ...formData };
 
     if (
@@ -194,7 +194,7 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
-  const childRemoveMemberFormData = (childdata) => {
+  const newProjectRemoveMember = (childdata) => {
     const newFormData = { ...formData };
     const memberIdToRemove = childdata?.original._id;
 
@@ -209,7 +209,22 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
-  const childTeamLeadSelect = (childdata) => {
+  const editProjectRemoveMember = (childdata) => {
+    const newProjectStateUpdate = { ...projectStateUpdate };
+    const memberIdToRemove = childdata?.original._id;
+
+    if (!memberIdToRemove) {
+      return;
+    }
+
+    newProjectStateUpdate.Members = projectStateUpdate.Members.filter(
+      (member) => member._id !== memberIdToRemove
+    );
+
+    setProjectStateUpdate(newProjectStateUpdate);
+  };
+
+  const newProjectTeamLeadSelect = (childdata) => {
     const newFormData = { ...formData };
 
     if (newFormData.TeamLead.includes(childdata?.original._id)) {
@@ -225,17 +240,7 @@ const Dashboard = () => {
     setFormData(newFormData);
   };
 
-  const updateMembersWithFullNames = () => {
-    const mergedUsers = projectStateUpdate?.Members.map((user) => {
-      return {
-        ...user,
-        FullName: `${user?.FirstName} ${user?.LastName}`,
-      };
-    });
-    setProjectStateUpdate(...projectStateUpdate, mergedUsers);
-  };
-
-  const editTeamLeadSelect = (childdata) => {
+  const editProjectTeamLeadSelect = (childdata) => {
     const newFormData = { ...projectStateUpdate };
 
     if (newFormData.TeamLead.includes(childdata?.original._id)) {
@@ -251,7 +256,7 @@ const Dashboard = () => {
     setProjectStateUpdate(newFormData);
   };
 
-  const editMemberAdd = (childdata) => {
+  const editProjectMemberAdd = (childdata) => {
     console.log(projectStateUpdate);
     const newFormData = { ...projectStateUpdate };
     console.log(newFormData);
@@ -295,7 +300,7 @@ const Dashboard = () => {
     setDeletePopup(false);
   };
 
-  const updateProjectTableDataByRowId = async (row) => {
+  const selectEditProjectFromRowId = async (row) => {
     const arr = projectTableData.filter(
       (item) => item._id === row.original._id
     );
@@ -395,7 +400,7 @@ const Dashboard = () => {
                   HEADLESS
                   FILTER
                   PLACEHOLDER="Filter by Employee"
-                  onClick={childAddMemberFormData}
+                  onClick={newProjectAddMember}
                   minRows={0}
                 />
               </div>
@@ -416,8 +421,8 @@ const Dashboard = () => {
                   HEADLESS
                   FILTER
                   PLACEHOLDER="Filter by Employee"
-                  onClick={childTeamLeadSelect}
-                  onContextMenu={childRemoveMemberFormData}
+                  onClick={newProjectTeamLeadSelect}
+                  onContextMenu={newProjectRemoveMember}
                   minRows={0}
                 />
               </div>
@@ -490,7 +495,7 @@ const Dashboard = () => {
                   HEADLESS
                   FILTER
                   PLACEHOLDER="Filter by Employee"
-                  onClick={editMemberAdd}
+                  onClick={editProjectMemberAdd}
                   minRows={0}
                 />
               </div>
@@ -512,8 +517,8 @@ const Dashboard = () => {
                   HEADLESS
                   FILTER
                   PLACEHOLDER="Filter by Employee"
-                  onClick={editTeamLeadSelect}
-                  onContextMenu={childRemoveMemberFormData}
+                  onClick={editProjectTeamLeadSelect}
+                  onContextMenu={editProjectRemoveMember}
                   minRows={0}
                 />
               </div>
@@ -599,7 +604,7 @@ const Dashboard = () => {
               PLACEHOLDER="Filter by Project, Description or Team Lead"
               minRows={0}
               onContextMenu={deleteConfirmation}
-              onClick={updateProjectTableDataByRowId}
+              onClick={selectEditProjectFromRowId}
             />
           </div>
         </div>
