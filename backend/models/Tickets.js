@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const TicketSchema = new mongoose.Schema({
-  Title: {
+  Name: {
     type: String,
     required: true,
   },
@@ -27,13 +27,5 @@ const TicketSchema = new mongoose.Schema({
   },
 });
 
-TicketSchema.save((error) => {
-  if (error) {
-    console.log(error);
-  } else {
-    console.log("User saved successfully");
-  }
-});
-
-const TicketModel = mongoose.model("Ticket", TicketModel, "Ticket");
+const TicketModel = mongoose.model("Ticket", TicketSchema, "Ticket");
 module.exports = TicketModel;

@@ -321,8 +321,13 @@ const Dashboard = () => {
     );
 
     const updatedProjectState = { ...arr[0], Members: updatedMembers };
+    console.log(updatedProjectState);
     setProjectStateUpdate(updatedProjectState);
     setEditPopup(true);
+  };
+
+  const handleBugsButtonClick = () => {
+    navigate("/bugs");
   };
 
   return (
@@ -339,8 +344,7 @@ const Dashboard = () => {
           </div>
           <div className="grid2">
             <button
-              style={{ background: "#FF2530" }}
-              className="project-btn"
+              className="project-btn red"
               onClick={() => {
                 deleteRow(deleteConfirmationState);
               }}
@@ -548,8 +552,15 @@ const Dashboard = () => {
                 <option value="Low">Low</option>
               </select>
             </div>
-
+          </div>
+          <div className="btn-container">
             <button className="project-btn">Submit</button>
+            <button
+              className="project-btn yellow"
+              onClick={handleBugsButtonClick}
+            >
+              Bugs {">>"}
+            </button>
           </div>
         </form>
       </Project>

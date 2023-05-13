@@ -5,8 +5,7 @@ import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
-import Project from "./Project";
-import Selectiontable from "./Selectiontable";
+import { getTicketsByProjectId } from "../services/TicketService";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
@@ -23,9 +22,20 @@ const BUGCOLUMNS = [
 
 const Bugs = () => {
   const { projectStateUpdate } = useProjects();
-  const [projectData, setProjectData] = useState([]);
   const [bugData, setBugData] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const bugs = await getTicketsByProjectId(projectStateUpdate._id);
+        setBugData(bugs.ticket);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleChooseProject = () => {
     navigate("/dashboard");
@@ -39,7 +49,7 @@ const Bugs = () => {
       <div className="bugs-container">
         <div className="bugs-container-inner">
           <div className="bugs-title max-width">
-            <h2>Project title: {projectStateUpdate[0]?.Title}</h2>
+            <h2>Project title: {projectStateUpdate?.Title}</h2>
             <div className="btn-wrapper">
               <button className="project-btn" onClick={handleChooseProject}>
                 Choose project
@@ -55,7 +65,11 @@ const Bugs = () => {
           >
             <Basictable
               COLUMNS={PROJECTCOLUMNS}
-              DATA={projectStateUpdate ? projectStateUpdate : []}
+              DATA={
+                Object.keys(projectStateUpdate).length === 0
+                  ? [{ Title: "Project not loaded" }]
+                  : [projectStateUpdate]
+              }
             />
           </div>
           {/* Bug description section */}
@@ -69,7 +83,14 @@ const Bugs = () => {
             </div>
           </div>
           <div className="table-container max-width">
-            <Basictable COLUMNS={BUGCOLUMNS} DATA={bugData} />
+            <Basictable
+              COLUMNS={BUGCOLUMNS}
+              DATA={
+                Object.keys(bugData).length === 0
+                  ? [{ Name: "Project not loaded" }]
+                  : [bugData]
+              }
+            />
           </div>
         </div>
       </div>
