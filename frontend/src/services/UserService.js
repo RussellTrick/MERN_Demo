@@ -101,3 +101,19 @@ export async function getUserById(id) {
       throw error;
     });
 }
+
+export async function addProjectToUser(projectId, userId = null) {
+  if (!projectId) return console.log("Project id is required");
+  return axiosPrivate
+    .post("/users/", {
+      userId: userId,
+      projectId: projectId,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+}

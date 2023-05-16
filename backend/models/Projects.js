@@ -28,13 +28,13 @@ const ProjectSchema = new mongoose.Schema({
   },
   Members: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Member",
+    ref: "Members",
     required: true,
     default: [],
   },
   Tickets: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Ticket",
+    ref: "Tickets",
     required: true,
     default: [],
   },

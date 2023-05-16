@@ -42,17 +42,25 @@ exports.createProject = async (req, res) => {
     Members,
     Tickets,
   } = req.body;
-  const userId = req.user._id;
+
   try {
+    const members = Members.map((memberId) =>
+      mongoose.Types.ObjectId(memberId)
+    );
+    const tickets = Tickets.map((ticketId) =>
+      mongoose.Types.ObjectId(ticketId)
+    );
+    const teamlead = mongoose.Types.ObjectId(TeamLead);
+
     const project = new Project({
       Title,
       Description,
-      TeamLead,
+      TeamLead: teamlead,
       Created,
       Status,
       Urgency,
-      Members,
-      Tickets,
+      Members: members,
+      Tickets: tickets,
     });
     await project.save();
     res.status(201).json({ project });

@@ -76,8 +76,12 @@ exports.getUsers = async (req, res) => {
 
 exports.addProjectToUser = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    let userId = req.user._id;
     const projectId = req.body.projectId;
+
+    if (req.body.userId) {
+      userId = req.body.userId;
+    }
 
     const updatedUser = await UserModel.findOneAndUpdate(
       { _id: userId },

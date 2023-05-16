@@ -1,4 +1,5 @@
 import axios from "../api/axios";
+import { addProjectToUser } from "./UserService";
 
 export async function getProjectsByUserId() {
   return axios
@@ -58,26 +59,33 @@ export async function getProjects(setErrMsg, projectsObj) {
   }
 }
 
-export function createProject({ setErrMsg }, { projectState }) {
+export function createProject(
+  { setErrMsg },
+  formData,
+  formDataDefault,
+  userId = null
+) {
+  const memberIds = formData.Members.map((member) => member._id);
+
   axios
     .post(
       "/projects",
       {
-        Title: projectState.title || projectState.default.title,
-        Description:
-          projectState.description || projectState.default.description,
-        Teamlead: projectState.teamlead || projectState.default.teamlead,
-        Created: projectState.created || projectState.default,
-        Status: projectState.status || projectState.default.status,
-        Urgency: projectState.urgency || projectState.default.urgency,
-        Members: projectState.members || projectState.default.members,
-        Tickets: projectState.tickets || projectState.default.tickets,
+        Title: formData.Title || formDataDefault.Title,
+        Description: formData.Description || formDataDefault.Description,
+        TeamLead: formData.TeamLead || formDataDefault.TeamLead,
+        Created: formData.Created || formDataDefault.Created,
+        Status: formData.Status || formDataDefault.Status,
+        Urgency: formData.Urgency || formDataDefault.Urgency,
+        Members: memberIds || formDataDefault.Members,
+        Tickets: formData.Tickets || formDataDefault.Tickets,
       },
       { withCredentials: true }
     )
     .then((res) => {
       console.log(res);
-      // handle the response data here
+      const projectId = res.data.project._id;
+      addProjectToUser(projectId, userId);
     })
     .catch((err) => {
       console.error(err);
@@ -93,13 +101,13 @@ export function updateProject({ setErrMsg }, { projectStateUpdate }) {
   }
 
   const updatedData = {};
-  updatedData.Title = projectStateUpdate?.title;
-  updatedData.Description = projectStateUpdate?.description;
-  updatedData.TeamLead = projectStateUpdate?.teamlead;
-  updatedData.Status = projectStateUpdate?.status;
-  updatedData.Urgency = projectStateUpdate?.urgency;
-  updatedData.Members = projectStateUpdate?.members;
-  updatedData.Tickets = projectStateUpdate?.tickets;
+  updatedData.Title = projectStateUpdate?.Title;
+  updatedData.Description = projectStateUpdate?.Description;
+  updatedData.TeamLead = projectStateUpdate?.TeamLead;
+  updatedData.Status = projectStateUpdate?.Status;
+  updatedData.Urgency = projectStateUpdate?.Urgency;
+  updatedData.Members = projectStateUpdate?.Members;
+  updatedData.Tickets = projectStateUpdate?.Tickets;
 
   axios
     .put(

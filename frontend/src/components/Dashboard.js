@@ -49,6 +49,7 @@ const Dashboard = () => {
     projectStateUpdate,
     setProjectState,
     setProjectStateUpdate,
+    defaultProjectState,
   } = useProjects();
 
   const [errMsg, setErrMsg] = useState();
@@ -129,19 +130,8 @@ const Dashboard = () => {
     fetchData();
   }, [loading]);
 
-  const defaultFormData = {
-    Project: "",
-    Description: "",
-    TeamLead: "",
-    TeamLeadName: "Not Selected",
-    Members: [],
-    Status: "incomplete",
-    Urgency: "critical",
-  };
-
   const [deleteConfirmationState, setDeleteConfirmationState] =
-    useState(defaultFormData);
-  const [formData, setFormData] = useState(defaultFormData);
+    useState(defaultProjectState);
 
   const handleAddFormChange = (e) => {
     e.preventDefault();
@@ -149,27 +139,27 @@ const Dashboard = () => {
     const fieldName = e.target.getAttribute("name");
     const fieldValue = e.target.value;
 
-    const newFormData = { ...formData };
+    const newFormData = { ...projectState };
 
     newFormData[fieldName] = fieldValue;
 
-    setFormData(newFormData);
+    setProjectState(newFormData);
   };
 
-  // TODO Submit form to API && Refactor so that formData is sent to the API
-  const handleSubmit = (e) => {
+  const handleNewProjectSubmit = (e) => {
     e.preventDefault();
-    const newFormData = { ...formData };
+    const newFormData = { ...projectState };
 
-    newFormData["description"] = inputDescription.current.value;
-    newFormData["project"] = inputTitle.current.value;
+    newFormData["Description"] = inputDescription.current.value;
+    newFormData["Title"] = inputTitle.current.value;
 
-    setFormData(newFormData);
+    createProject({ setErrMsg }, newFormData, defaultProjectState);
     setProjectPopup(false);
+    setProjectState(defaultProjectState);
   };
 
   const newProjectAddMember = (childdata) => {
-    const newFormData = { ...formData };
+    const newFormData = { ...projectState };
 
     if (
       newFormData.Members.some(
@@ -179,7 +169,7 @@ const Dashboard = () => {
       return;
     } else {
       newFormData.Members = [
-        ...formData.Members,
+        ...projectState.Members,
         {
           _id: childdata?.original._id,
           FirstName: childdata?.original.FirstName,
@@ -191,22 +181,22 @@ const Dashboard = () => {
       ];
     }
 
-    setFormData(newFormData);
+    setProjectState(newFormData);
   };
 
   const newProjectRemoveMember = (childdata) => {
-    const newFormData = { ...formData };
+    const newFormData = { ...projectState };
     const memberIdToRemove = childdata?.original._id;
 
     if (!memberIdToRemove) {
       return;
     }
 
-    newFormData.Members = formData.Members.filter(
+    newFormData.Members = projectState.Members.filter(
       (member) => member._id !== memberIdToRemove
     );
 
-    setFormData(newFormData);
+    setProjectState(newFormData);
   };
 
   const editProjectRemoveMember = (childdata) => {
@@ -225,9 +215,11 @@ const Dashboard = () => {
   };
 
   const newProjectTeamLeadSelect = (childdata) => {
-    const newFormData = { ...formData };
-
-    if (newFormData.TeamLead.includes(childdata?.original._id)) {
+    const newFormData = { ...projectState };
+    if (
+      newFormData.TeamLead &&
+      newFormData.TeamLead.includes(childdata?.original._id)
+    ) {
       return;
     } else {
       newFormData.TeamLead = childdata?.original?._id;
@@ -237,7 +229,7 @@ const Dashboard = () => {
     var z = document.getElementById("members");
     z.style.color = "#009B83";
 
-    setFormData(newFormData);
+    setProjectState(newFormData);
   };
 
   const editProjectTeamLeadSelect = (childdata) => {
@@ -257,9 +249,7 @@ const Dashboard = () => {
   };
 
   const editProjectMemberAdd = (childdata) => {
-    console.log(projectStateUpdate);
     const newFormData = { ...projectStateUpdate };
-    console.log(newFormData);
     if (
       newFormData.Members.some(
         (item) => item.Email === childdata?.original.Email
@@ -367,30 +357,30 @@ const Dashboard = () => {
       <Project
         trigger={projectPopup}
         setTrigger={setProjectPopup}
-        state={formData}
-        setState={setFormData}
-        defaultFormData={defaultFormData}
+        state={projectState}
+        setState={setProjectState}
+        defaultState={defaultProjectState}
       >
         <h3>New project</h3>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleNewProjectSubmit}>
           <div className="select-container">
             <div className="grid1">
-              <label htmlFor="project">Title</label>
+              <label htmlFor="Title">Title</label>
               <input
                 ref={inputTitle}
                 required="required"
                 autoFocus
-                name="project"
+                name="Title"
               ></input>
             </div>
 
             <div className="grid1">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="Description">Description</label>
               <textarea
                 ref={inputDescription}
                 required="required"
-                name="description"
+                name="Description"
                 rows="6"
               ></textarea>
             </div>
@@ -416,11 +406,11 @@ const Dashboard = () => {
                 id="members"
                 style={{ color: "#FF2530" }}
               >
-                Team Lead: {formData?.TeamLeadName}
+                Team Lead: {projectState?.TeamLeadName}
               </label>
               <div className="new-project-table-container">
                 <Selectiontable
-                  DATA={formData.Members}
+                  DATA={projectState.Members ? projectState.Members : []}
                   COLUMNS={SELECTIONCOLUMNS}
                   HEADLESS
                   FILTER
@@ -433,19 +423,23 @@ const Dashboard = () => {
             </div>
 
             <div className="grid2">
-              <label htmlFor="status">Status</label>
-              <select onChange={handleAddFormChange} name="status">
-                <option value="incomplete">Incomplete</option>
-                <option value="complete">Complete</option>
+              <label htmlFor="Status">Status</label>
+              <select onChange={handleAddFormChange} name="Status">
+                <option value="Incomplete">Incomplete</option>
+                <option value="Complete">Complete</option>
               </select>
             </div>
 
             <div className="grid2">
-              <label htmlFor="urgency">Priority</label>
-              <select onChange={handleAddFormChange} name="urgency">
-                <option value="critical">Critical</option>
-                <option value="normal">Normal</option>
-                <option value="low">Low</option>
+              <label htmlFor="Urgency">Priority</label>
+              <select
+                onChange={handleAddFormChange}
+                name="Urgency"
+                defaultValue="Normal"
+              >
+                <option value="Critical">Critical</option>
+                <option value="Normal">Normal</option>
+                <option value="Low">Low</option>
               </select>
             </div>
 
@@ -455,12 +449,7 @@ const Dashboard = () => {
       </Project>
 
       {/* Edit Project Modal */}
-      <Project
-        trigger={editPopup}
-        setTrigger={setEditPopup}
-        state={formData}
-        setState={setFormData}
-      >
+      <Project trigger={editPopup} setTrigger={setEditPopup}>
         <h3>
           Currently Editing:{" "}
           {projectStateUpdate
@@ -468,7 +457,7 @@ const Dashboard = () => {
             : "Project failed to load"}
         </h3>
 
-        <form onSubmit={handleSubmit}>
+        <form>
           <div className="select-container">
             <div className="grid1">
               <label htmlFor="projectEdit">Title</label>

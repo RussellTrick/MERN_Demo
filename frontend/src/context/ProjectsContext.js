@@ -6,16 +6,18 @@ const ProjectContext = createContext({});
 export const ProjectProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [projectStateUpdate, setProjectStateUpdate] = useState([]);
-  const [projectState, setProjectState] = useState({
-    Title: { value: "", default: "Untitled" },
-    Description: { value: "", default: "" },
-    Teamlead: { value: "", default: "" },
-    Created: { value: "", default: new Date() },
-    Status: { value: "", default: "Uncompleted" },
-    Urgency: { value: "", default: "Low" },
-    Members: { value: [], default: [] },
-    Tickets: { value: [], default: [] },
-  });
+  const defaultProjectState = {
+    Title: "Untitled",
+    Description: "",
+    TeamLead: "",
+    TeamLeadName: "Not Selected",
+    Created: new Date(),
+    Status: "Uncompleted",
+    Urgency: "Normal",
+    Members: [],
+    Tickets: [],
+  };
+  const [projectState, setProjectState] = useState(defaultProjectState);
 
   const fetchProjectIDs = async () => {
     try {
@@ -34,6 +36,7 @@ export const ProjectProvider = ({ children }) => {
         projectState,
         setProjectState,
         projectStateUpdate,
+        defaultProjectState,
         setProjectStateUpdate,
         fetchProjectIDs,
       }}
