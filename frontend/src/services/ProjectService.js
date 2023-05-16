@@ -1,5 +1,5 @@
 import axios from "../api/axios";
-import { addProjectToUser } from "./UserService";
+import { addProjectToUser, deleteProjectFromUser } from "./UserService";
 
 export async function getProjectsByUserId() {
   return axios
@@ -59,7 +59,7 @@ export async function getProjects(setErrMsg, projectsObj) {
   }
 }
 
-export function createProject(
+export async function createProject(
   { setErrMsg },
   formData,
   formDataDefault,
@@ -67,8 +67,8 @@ export function createProject(
 ) {
   const memberIds = formData.Members.map((member) => member._id);
 
-  axios
-    .post(
+  try {
+    const res = await axios.post(
       "/projects",
       {
         Title: formData.Title || formDataDefault.Title,
@@ -81,16 +81,15 @@ export function createProject(
         Tickets: formData.Tickets || formDataDefault.Tickets,
       },
       { withCredentials: true }
-    )
-    .then((res) => {
-      console.log(res);
-      const projectId = res.data.project._id;
-      addProjectToUser(projectId, userId);
-    })
-    .catch((err) => {
-      console.error(err);
-      setErrMsg(err);
-    });
+    );
+
+    console.log(res);
+    const projectId = res.data.project._id;
+    await addProjectToUser(projectId, userId);
+  } catch (err) {
+    console.error(err);
+    setErrMsg(err);
+  }
 }
 
 export function updateProject({ setErrMsg }, { projectStateUpdate }) {
@@ -130,7 +129,9 @@ export function deleteProject({ setErrMsg }, projectId) {
     .delete(`/projects/${projectId}`, { withCredentials: true })
     .then((res) => {
       console.log(res);
-      // handle the response data here
+      if (res.status === 200) {
+        deleteProjectFromUser(projectId);
+      }
     })
     .catch((err) => {
       console.error(err);

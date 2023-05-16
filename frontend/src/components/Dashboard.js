@@ -10,7 +10,11 @@ import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import useProjects from "../hooks/useProjects";
-import { getProjects, createProject } from "../services/ProjectService";
+import {
+  getProjects,
+  createProject,
+  deleteProject,
+} from "../services/ProjectService";
 import { useNavigate } from "react-router-dom";
 import { getUsers, getUserById } from "../services/UserService";
 
@@ -61,7 +65,6 @@ const Dashboard = () => {
   const inputDescription = useRef(null);
   const [projectTableData, setProjectTableData] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  const [loading, isLoading] = useState(false);
   const navigate = useNavigate();
 
   //Disable right click, context menu and load intial projects
@@ -71,7 +74,6 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         await fetchProjectIDs(); // Fetch projects
-        isLoading(true); // Set flag to indicate projects is ready
       } catch (error) {
         // Handle any errors that occur during fetchProjectIDs()
         console.error(error);
@@ -106,29 +108,27 @@ const Dashboard = () => {
   //Ensure project is loaded before setting projectTableData
   useEffect(() => {
     const fetchData = async () => {
-      if (loading) {
-        const projectsData = await getProjects({ setErrMsg }, projects);
+      const projectsData = await getProjects({ setErrMsg }, projects);
 
-        // Map over the array of projects and update each one to include the team lead's name
-        const projectsWithTeamLeadNames = await Promise.all(
-          projectsData.map(async (project) => {
-            // Call getUserById to get the team lead's name
-            const response = project?.TeamLead
-              ? await getUserById(project?.TeamLead)
-              : { FirstName: "" };
-            // Return the updated project object with the team lead's name added
-            return {
-              ...project,
-              TeamLeadName: `${response?.user?.FirstName} ${response?.user?.LastName}`,
-            };
-          })
-        );
+      // Map over the array of projects and update each one to include the team lead's name
+      const projectsWithTeamLeadNames = await Promise.all(
+        projectsData.map(async (project) => {
+          // Call getUserById to get the team lead's name
+          const response = project?.TeamLead
+            ? await getUserById(project?.TeamLead)
+            : { FirstName: "" };
+          // Return the updated project object with the team lead's name added
+          return {
+            ...project,
+            TeamLeadName: `${response?.user?.FirstName} ${response?.user?.LastName}`,
+          };
+        })
+      );
 
-        setProjectTableData(projectsWithTeamLeadNames);
-      }
+      setProjectTableData(projectsWithTeamLeadNames);
     };
     fetchData();
-  }, [loading]);
+  }, [projects]);
 
   const [deleteConfirmationState, setDeleteConfirmationState] =
     useState(defaultProjectState);
@@ -146,16 +146,21 @@ const Dashboard = () => {
     setProjectState(newFormData);
   };
 
-  const handleNewProjectSubmit = (e) => {
+  const handleNewProjectSubmit = async (e) => {
     e.preventDefault();
     const newFormData = { ...projectState };
 
     newFormData["Description"] = inputDescription.current.value;
     newFormData["Title"] = inputTitle.current.value;
 
-    createProject({ setErrMsg }, newFormData, defaultProjectState);
-    setProjectPopup(false);
-    setProjectState(defaultProjectState);
+    try {
+      await createProject({ setErrMsg }, newFormData, defaultProjectState);
+      await fetchProjectIDs();
+      setProjectPopup(false);
+      setProjectState(defaultProjectState);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const newProjectAddMember = (childdata) => {
@@ -278,7 +283,6 @@ const Dashboard = () => {
     if (row != null) {
       setDeleteConfirmationState(row);
     }
-
     setDeletePopup(true);
   };
 
@@ -287,6 +291,7 @@ const Dashboard = () => {
     setProjectTableData(
       projectTableData.filter((current) => current._id !== row.original._id)
     );
+    deleteProject({ setErrMsg }, row.original._id);
     setDeletePopup(false);
   };
 

@@ -117,3 +117,18 @@ export async function addProjectToUser(projectId, userId = null) {
       throw error;
     });
 }
+
+export function deleteProjectFromUser(projectId, userId = null) {
+  if (!projectId) return console.log("Project id is required");
+  return axiosPrivate
+    .delete("/users", {
+      data: { userId: userId, projectId: projectId },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+}

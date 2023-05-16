@@ -95,6 +95,32 @@ exports.addProjectToUser = async (req, res, next) => {
   }
 };
 
+exports.removeProjectFromUser = async (req, res, next) => {
+  console.log("Attempting to remove project from user");
+  try {
+    let userId = req.user._id;
+    const projectId = req.body.projectId;
+    if (req.body.userId) {
+      userId = req.body.userId;
+    }
+
+    console.log(userId);
+    console.log(projectId);
+    console.log(req.body.userId);
+
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $pull: { Projects: projectId } },
+      { new: true }
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 exports.getUserById = async (req, res, next) => {
   try {
     const userId = req.params.id;
