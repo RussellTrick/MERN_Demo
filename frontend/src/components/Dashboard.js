@@ -136,9 +136,7 @@ const Dashboard = () => {
   const [deleteConfirmationState, setDeleteConfirmationState] =
     useState(defaultProjectState);
 
-  const handleAddFormChange = (e) => {
-    e.preventDefault();
-
+  const handleNewProjectChange = (e) => {
     const fieldName = e.target.getAttribute("name");
     const fieldValue = e.target.value;
 
@@ -147,6 +145,17 @@ const Dashboard = () => {
     newFormData[fieldName] = fieldValue;
 
     setProjectState(newFormData);
+  };
+
+  const handleEditProjectChange = (e) => {
+    const fieldName = e.target.getAttribute("name");
+    const fieldValue = e.target.value;
+
+    const newFormData = { ...projectStateUpdate };
+
+    newFormData[fieldName] = fieldValue;
+
+    setProjectStateUpdate(newFormData);
   };
 
   const handleNewProjectSubmit = async (e) => {
@@ -447,7 +456,7 @@ const Dashboard = () => {
 
             <div className="grid2">
               <label htmlFor="Status">Status</label>
-              <select onChange={handleAddFormChange} name="Status">
+              <select onChange={handleNewProjectChange} name="Status">
                 <option value="Incomplete">Incomplete</option>
                 <option value="Complete">Complete</option>
               </select>
@@ -456,7 +465,7 @@ const Dashboard = () => {
             <div className="grid2">
               <label htmlFor="Urgency">Priority</label>
               <select
-                onChange={handleAddFormChange}
+                onChange={handleNewProjectChange}
                 name="Urgency"
                 defaultValue="Normal"
               >
@@ -543,11 +552,11 @@ const Dashboard = () => {
             </div>
 
             <div className="grid2">
-              <label htmlFor="editStatus">Status</label>
+              <label htmlFor="Status">Status</label>
               <select
-                onChange={handleAddFormChange}
+                onChange={handleEditProjectChange}
                 name="Status"
-                defaultValue={projectStateUpdate.Status}
+                value={projectStateUpdate.Status || "Incomplete"}
               >
                 <option value="Incomplete">Incomplete</option>
                 <option value="Complete">Complete</option>
@@ -555,11 +564,11 @@ const Dashboard = () => {
             </div>
 
             <div className="grid2">
-              <label htmlFor="editUrgency">Priority</label>
+              <label htmlFor="Urgency">Priority</label>
               <select
-                onChange={handleAddFormChange}
+                onChange={handleEditProjectChange}
                 name="Urgency"
-                defaultValue={projectStateUpdate.Urgency}
+                value={projectStateUpdate.Urgency || "Critical"}
               >
                 <option value="Critical">Critical</option>
                 <option value="Normal">Normal</option>
