@@ -1,4 +1,4 @@
-import axios from "../api/axios";
+import axios, { axiosPrivate } from "../api/axios";
 import { addProjectToUser, deleteProjectFromUser } from "./UserService";
 
 export async function getProjectsByUserId() {
@@ -92,35 +92,36 @@ export async function createProject(
   }
 }
 
-export function updateProject({ setErrMsg }, { projectStateUpdate }) {
-  if (!projectStateUpdate.projectId) {
-    setErrMsg("Cannot update project: projectId is missing");
-    console.log("Cannot update project missing id");
+export function updateProject({ setErrMsg }, projectStateUpdate) {
+  if (!projectStateUpdate._id) {
+    setErrMsg("Cannot update project: project ID is missing");
+    console.log("Cannot update project missing ID`");
     return;
   }
 
-  const updatedData = {};
-  updatedData.Title = projectStateUpdate?.Title;
-  updatedData.Description = projectStateUpdate?.Description;
-  updatedData.TeamLead = projectStateUpdate?.TeamLead;
-  updatedData.Status = projectStateUpdate?.Status;
-  updatedData.Urgency = projectStateUpdate?.Urgency;
-  updatedData.Members = projectStateUpdate?.Members;
-  updatedData.Tickets = projectStateUpdate?.Tickets;
+  const projectId = projectStateUpdate._id;
 
-  axios
+  axiosPrivate
     .put(
-      `/projects/${projectStateUpdate.projectId}`,
-      { updatedData },
+      `/projects/${projectId}`,
+      {
+        Title: projectStateUpdate?.Title,
+        Description: projectStateUpdate?.Description,
+        TeamLead: projectStateUpdate?.TeamLead,
+        Created: projectStateUpdate?.Created,
+        Status: projectStateUpdate?.Status,
+        Urgency: projectStateUpdate?.Urgency,
+        Members: projectStateUpdate?.Members,
+        Tickets: projectStateUpdate?.Tickets,
+      },
       { withCredentials: true }
     )
     .then((res) => {
       console.log(res);
-      // handle the response data here
     })
     .catch((err) => {
       console.error(err);
-      // handle the error here
+      setErrMsg(err);
     });
 }
 

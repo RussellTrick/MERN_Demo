@@ -14,6 +14,7 @@ import {
   getProjects,
   createProject,
   deleteProject,
+  updateProject,
 } from "../services/ProjectService";
 import { useNavigate } from "react-router-dom";
 import { getUsers, getUserById } from "../services/UserService";
@@ -63,6 +64,8 @@ const Dashboard = () => {
   const [editPopup, setEditPopup] = useState(false);
   const inputTitle = useRef(null);
   const inputDescription = useRef(null);
+  const editTitle = useRef(null);
+  const editDescription = useRef(null);
   const [projectTableData, setProjectTableData] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const navigate = useNavigate();
@@ -160,6 +163,22 @@ const Dashboard = () => {
       setProjectState(defaultProjectState);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleEditProjectSubmit = async (e) => {
+    e.preventDefault();
+    const newFormData = { ...projectStateUpdate };
+
+    newFormData["Description"] = editDescription.current.value;
+    newFormData["Title"] = editTitle.current.value;
+    try {
+      updateProject({ setErrMsg }, newFormData);
+      await fetchProjectIDs();
+      setEditPopup(false);
+      setProjectStateUpdate(defaultProjectState);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -316,7 +335,6 @@ const Dashboard = () => {
     );
 
     const updatedProjectState = { ...arr[0], Members: updatedMembers };
-    console.log(updatedProjectState);
     setProjectStateUpdate(updatedProjectState);
     setEditPopup(true);
   };
@@ -462,7 +480,7 @@ const Dashboard = () => {
             : "Project failed to load"}
         </h3>
 
-        <form>
+        <form onSubmit={handleEditProjectSubmit}>
           <div className="select-container">
             <div className="grid1">
               <label htmlFor="projectEdit">Title</label>
@@ -471,16 +489,18 @@ const Dashboard = () => {
                 autoFocus
                 name="projectEdit"
                 defaultValue={projectStateUpdate?.Title}
+                ref={editTitle}
               ></input>
             </div>
 
             <div className="grid1">
-              <label htmlFor="descriptionEdit">Description</label>
+              <label htmlFor="Description">Description</label>
               <textarea
                 required="required"
                 name="descriptionEdit"
                 rows="6"
                 defaultValue={projectStateUpdate?.Description}
+                ref={editDescription}
               ></textarea>
             </div>
 
@@ -526,7 +546,7 @@ const Dashboard = () => {
               <label htmlFor="editStatus">Status</label>
               <select
                 onChange={handleAddFormChange}
-                name="editStatus"
+                name="Status"
                 defaultValue={projectStateUpdate.Status}
               >
                 <option value="Incomplete">Incomplete</option>
@@ -538,7 +558,7 @@ const Dashboard = () => {
               <label htmlFor="editUrgency">Priority</label>
               <select
                 onChange={handleAddFormChange}
-                name="editUrgency"
+                name="Urgency"
                 defaultValue={projectStateUpdate.Urgency}
               >
                 <option value="Critical">Critical</option>
