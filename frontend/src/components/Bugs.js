@@ -114,12 +114,12 @@ const Bugs = () => {
               padding: "10px",
             }}
           >
-            <p1>
+            <p>
               - Click NEW BUG button to create a new Bug for the selected
               project.
-            </p1>
-            <p1>- Left click on a Bug in the table to view or edit it.</p1>
-            <p1>- Right click on a Bug in the table to delete it.</p1>
+            </p>
+            <p>- Left click on a Bug in the table to view or edit it.</p>
+            <p>- Right click on a Bug in the table to delete it.</p>
           </div>
         </div>
       </Modal>
