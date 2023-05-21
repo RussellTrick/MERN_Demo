@@ -24,8 +24,4 @@ router.get("/check-auth", checkAuth, async (req, res) => {
   res.status(200).json({ authenticated: true });
 });
 
-router.get("/protected-route", checkAuth, (req, res) => {
-  res.json({ message: "This is a protected route." });
-});
-
 module.exports = router;

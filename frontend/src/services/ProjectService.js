@@ -139,3 +139,19 @@ export function deleteProject({ setErrMsg }, projectId) {
       // handle the error here
     });
 }
+
+export function deleteTicketFromProject(projectId, ticketId) {
+  if (!projectId) return console.log("Project id is required");
+  if (!ticketId) return console.log("Ticket id is required");
+  return axiosPrivate
+    .delete("/projects", {
+      data: { ticketId: ticketId, projectId: projectId },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+}

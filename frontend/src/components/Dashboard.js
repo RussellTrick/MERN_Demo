@@ -314,7 +314,6 @@ const Dashboard = () => {
     setDeletePopup(true);
   };
 
-  //TODO add delete request and link to API
   const deleteRow = (row) => {
     setProjectTableData(
       projectTableData.filter((current) => current._id !== row.original._id)

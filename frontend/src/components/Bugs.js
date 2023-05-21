@@ -5,7 +5,7 @@ import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { getTicketsByProjectId } from "../services/TicketService";
+import { getTicketById, deleteTicket } from "../services/TicketService";
 import Modal from "./Modal";
 
 const PROJECTCOLUMNS = [
@@ -27,21 +27,53 @@ const Bugs = () => {
   const navigate = useNavigate();
   const [helpPopup, setHelpPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
-
+  const [errMsg, setErrMsg] = useState();
+  const [deleteConfirmationState, setDeleteConfirmationState] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const bugs = await getTicketsByProjectId(projectStateUpdate._id);
-        setBugData(bugs.ticket);
+        const ticketIds = projectStateUpdate.Tickets;
+
+        // Map over each ticket ID and create an array of promises
+        const ticketPromises = ticketIds.map(async (ticketId) => {
+          try {
+            // Make API call for each ticket ID
+            const ticket = await getTicketById(ticketId);
+            return ticket;
+          } catch (error) {
+            console.error(error);
+            throw error;
+          }
+        });
+
+        // Wait for all the promises to resolve
+        const ticketData = await Promise.all(ticketPromises);
+
+        // Use the ticketData array as needed
+        setBugData(ticketData);
       } catch (error) {
         console.error(error);
       }
     };
+
     fetchData();
   }, []);
 
   const handleChooseProject = () => {
     navigate("/dashboard");
+  };
+
+  const deleteConfirmation = (row) => {
+    if (row != null) {
+      setDeleteConfirmationState(row);
+    }
+    setDeletePopup(true);
+  };
+
+  const deleteRow = (row) => {
+    setBugData(bugData.filter((current) => current._id !== row.original._id));
+    deleteTicket({ setErrMsg }, projectStateUpdate._id, row.original._id);
+    setDeletePopup(false);
   };
 
   return (
@@ -94,8 +126,9 @@ const Bugs = () => {
                 DATA={
                   Object.keys(bugData).length === 0
                     ? [{ Name: "Project not loaded" }]
-                    : [bugData]
+                    : bugData
                 }
+                onContextMenu={deleteConfirmation}
               />
             </div>
           </div>
@@ -120,6 +153,38 @@ const Bugs = () => {
             </p>
             <p>- Left click on a Bug in the table to view or edit it.</p>
             <p>- Right click on a Bug in the table to delete it.</p>
+          </div>
+        </div>
+      </Modal>
+      {/* Bug delete confirmation modal */}
+      <Modal trigger={deletePopup} setTrigger={setDeletePopup}>
+        <div className="select-container">
+          <div className="grid1">
+            <h3>
+              Are you sure you want to delete:{" "}
+              {deleteConfirmationState?.original?.Name
+                ? deleteConfirmationState?.original?.Name
+                : ""}
+              {"?"}
+            </h3>
+          </div>
+          <div className="grid2">
+            <button
+              className="project-btn red"
+              onClick={() => {
+                deleteRow(deleteConfirmationState);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+          <div className="aiend grid2">
+            <button
+              className="project-btn"
+              onClick={() => setDeletePopup(false)}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </Modal>

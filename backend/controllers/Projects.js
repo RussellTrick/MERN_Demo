@@ -122,3 +122,22 @@ exports.deleteProject = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.removeTicketFromProject = async (req, res, next) => {
+  console.log("Attempting to remove ticket from project");
+  try {
+    const projectId = req.body.projectId;
+    const ticketId = req.body.ticketId;
+
+    const updatedProject = await Project.findOneAndUpdate(
+      { _id: projectId },
+      { $pull: { Tickets: ticketId } },
+      { new: true }
+    );
+
+    res.status(200).json(updatedProject);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

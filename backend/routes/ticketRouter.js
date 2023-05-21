@@ -1,8 +1,9 @@
 const { Router } = require("express");
 const router = Router();
 const { checkAuth } = require("../middlewares/auth");
-const { getTicketsByProjectId } = require("../controllers/Tickets");
+const { getTicketById, deleteTicket } = require("../controllers/Tickets");
 
-router.get("/:id", checkAuth, getTicketsByProjectId);
+router.get("/:ticketId", checkAuth, getTicketById);
+router.delete("/:ticketId", checkAuth, deleteTicket);
 
 module.exports = router;
