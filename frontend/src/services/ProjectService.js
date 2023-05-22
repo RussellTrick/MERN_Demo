@@ -21,7 +21,7 @@ export async function getProjectById({ setErrMsg }, projectId) {
     })
     .catch((err) => {
       console.error(err);
-      // handle the error here
+      setErrMsg(err);
     });
 }
 
@@ -146,6 +146,23 @@ export function deleteTicketFromProject(projectId, ticketId) {
   return axiosPrivate
     .delete("/projects", {
       data: { ticketId: ticketId, projectId: projectId },
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+      throw error;
+    });
+}
+
+export function addTicketToProject(projectId, ticketId) {
+  if (!projectId) return console.log("Project id is required");
+  if (!ticketId) return console.log("Ticket id is required");
+  return axiosPrivate
+    .post("/projects/add", {
+      projectId: projectId,
+      ticketId: ticketId,
     })
     .then((response) => {
       return response.data;

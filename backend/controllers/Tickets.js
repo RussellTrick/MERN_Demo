@@ -31,3 +31,25 @@ exports.deleteTicket = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.createTicket = async (req, res) => {
+  const { Name, Description, Project, Status, Urgency } = req.body;
+
+  const Member = req.user._id;
+
+  try {
+    const ticket = new Ticket({
+      Name,
+      Description,
+      Project,
+      Status,
+      Urgency,
+      Member,
+    });
+    await ticket.save();
+    res.status(201).json(ticket);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

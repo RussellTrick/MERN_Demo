@@ -141,3 +141,24 @@ exports.removeTicketFromProject = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.addTicketToProject = async (req, res, next) => {
+  console.log("Attempting to add a ticket to project");
+  try {
+    const projectId = req.body.projectId;
+    const ticketId = req.body.ticketId;
+    if (!ticketId) return "Missing ticket id";
+    if (!projectId) return "Missing project id";
+
+    const updatedProject = await Project.findOneAndUpdate(
+      { _id: projectId },
+      { $addToSet: { Tickets: ticketId } },
+      { new: true }
+    );
+
+    res.json({ success: true, project: updatedProject });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

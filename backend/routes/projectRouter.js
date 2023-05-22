@@ -8,6 +8,7 @@ const {
   updateProject,
   deleteProject,
   removeTicketFromProject,
+  addTicketToProject,
 } = require("../controllers/Projects");
 
 router.get("/", checkAuth, getProjectsByUserId);
@@ -17,5 +18,6 @@ router.get("/:projectId", checkAuth, getProjectById);
 router.put("/:projectId", checkAuth, updateProject);
 router.delete("/:projectId", checkAuth, deleteProject);
 router.delete("/", checkAuth, removeTicketFromProject);
+router.post("/add", checkAuth, addTicketToProject);
 
 module.exports = router;

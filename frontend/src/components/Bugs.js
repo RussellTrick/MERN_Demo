@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Basictable from "./Basictable";
 import "./Bugs.css";
 import useProjects from "../hooks/useProjects";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { getTicketById, deleteTicket } from "../services/TicketService";
+import {
+  getTicketById,
+  deleteTicket,
+  createTicket,
+} from "../services/TicketService";
 import Modal from "./Modal";
+import { getProjectById } from "../services/ProjectService";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
@@ -22,13 +27,24 @@ const BUGCOLUMNS = [
 ];
 
 const Bugs = () => {
-  const { projectStateUpdate } = useProjects();
+  const { projectStateUpdate, setProjectStateUpdate } = useProjects();
   const [bugData, setBugData] = useState([]);
   const navigate = useNavigate();
   const [helpPopup, setHelpPopup] = useState(false);
   const [deletePopup, setDeletePopup] = useState(false);
   const [errMsg, setErrMsg] = useState();
   const [deleteConfirmationState, setDeleteConfirmationState] = useState("");
+  const [newBugPopup, setNewBugPopup] = useState(false);
+  const bugName = useRef();
+  const bugDescription = useRef();
+  const [newBug, setNewBug] = useState({
+    Status: "Incomplete",
+    Urgency: "Normal",
+  });
+  const [isButtonDisabled, setIsButtonDisabled] = useState(
+    !projectStateUpdate._id
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,8 +64,6 @@ const Bugs = () => {
 
         // Wait for all the promises to resolve
         const ticketData = await Promise.all(ticketPromises);
-
-        // Use the ticketData array as needed
         setBugData(ticketData);
       } catch (error) {
         console.error(error);
@@ -57,7 +71,7 @@ const Bugs = () => {
     };
 
     fetchData();
-  }, []);
+  }, [projectStateUpdate]);
 
   const handleChooseProject = () => {
     navigate("/dashboard");
@@ -74,6 +88,47 @@ const Bugs = () => {
     setBugData(bugData.filter((current) => current._id !== row.original._id));
     deleteTicket({ setErrMsg }, projectStateUpdate._id, row.original._id);
     setDeletePopup(false);
+  };
+
+  const handleNewBugClick = async (e) => {
+    e.preventDefault();
+    const formData = { ...newBug };
+
+    formData["Project"] = projectStateUpdate._id;
+    formData["Name"] = bugName.current.value;
+    formData["Description"] = bugDescription.current.value;
+    await createTicket({ setErrMsg }, formData);
+    setNewBug({
+      Status: "Incomplete",
+      Urgency: "Normal",
+    });
+
+    const updateProjectState = async () => {
+      if (projectStateUpdate._id) {
+        const updatedState = await getProjectById(
+          { setErrMsg },
+          projectStateUpdate?._id
+        );
+        setProjectStateUpdate(updatedState.data.project);
+      } else {
+        console.log("Id missing");
+        console.log(projectStateUpdate);
+      }
+    };
+
+    await updateProjectState();
+    setNewBugPopup(false);
+  };
+
+  const handleNewBugOnChange = (e) => {
+    const fieldName = e.target.getAttribute("name");
+    const fieldValue = e.target.value;
+
+    const newFormData = { ...newBug };
+
+    newFormData[fieldName] = fieldValue;
+
+    setNewBug(newFormData);
   };
 
   return (
@@ -106,7 +161,21 @@ const Bugs = () => {
             <div className="bugs-title max-width">
               <h2>Bugs: </h2>
               <div className="btn-wrapper">
-                <button className="project-btn btn-width">NEW BUG</button>
+                {isButtonDisabled ? (
+                  <button className="project-btn red" disabled>
+                    No Project Selected
+                  </button>
+                ) : (
+                  <button
+                    className="project-btn btn-width"
+                    onClick={() => {
+                      setNewBugPopup(true);
+                    }}
+                  >
+                    NEW BUG
+                  </button>
+                )}
+
                 <button
                   className="project-btn"
                   onClick={() => {
@@ -187,6 +256,55 @@ const Bugs = () => {
             </button>
           </div>
         </div>
+      </Modal>
+      {/* New Bug Modal */}
+      <Modal trigger={newBugPopup} setTrigger={setNewBugPopup}>
+        <h2>New Bug</h2>
+        <form onSubmit={handleNewBugClick}>
+          <div className="select-container">
+            <div className="grid1">
+              <label htmlFor="Name">Name</label>
+              <input
+                ref={bugName}
+                required="required"
+                autoFocus
+                name="Name"
+              ></input>
+            </div>
+
+            <div className="grid1">
+              <label htmlFor="Description">Description</label>
+              <textarea
+                ref={bugDescription}
+                required="required"
+                name="Description"
+                rows="6"
+              ></textarea>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="Status">Status</label>
+              <select onChange={handleNewBugOnChange} name="Status">
+                <option value="Incomplete">Incomplete</option>
+                <option value="Complete">Complete</option>
+              </select>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="Urgency">Priority</label>
+              <select
+                onChange={handleNewBugOnChange}
+                name="Urgency"
+                defaultValue="Normal"
+              >
+                <option value="Critical">Critical</option>
+                <option value="Normal">Normal</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <button className="project-btn">Submit</button>
+          </div>
+        </form>
       </Modal>
     </>
   );
