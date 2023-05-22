@@ -201,7 +201,7 @@ const Bugs = () => {
                 COLUMNS={BUGCOLUMNS}
                 DATA={
                   Object.keys(bugData).length === 0
-                    ? [{ Name: "Project not loaded" }]
+                    ? [{ Name: "No Data" }]
                     : bugData
                 }
                 onContextMenu={deleteConfirmation}

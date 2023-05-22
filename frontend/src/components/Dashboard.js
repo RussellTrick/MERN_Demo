@@ -600,9 +600,9 @@ const Dashboard = () => {
               padding: "10px",
             }}
           >
-            <p1>- Click NEW PROJECT button to create a new Project.</p1>
-            <p1>- Left click on a project in the table to view or edit it.</p1>
-            <p1>- Right click on a project in the table to delete it.</p1>
+            <p>- Click NEW PROJECT button to create a new Project.</p>
+            <p>- Left click on a project in the table to view or edit it.</p>
+            <p>- Right click on a project in the table to delete it.</p>
           </div>
         </div>
       </Modal>
