@@ -87,6 +87,13 @@ const Bugs = () => {
   const deleteRow = (row) => {
     setBugData(bugData.filter((current) => current._id !== row.original._id));
     deleteTicket({ setErrMsg }, projectStateUpdate._id, row.original._id);
+    setProjectStateUpdate((prevState) => ({
+      ...prevState,
+      Tickets: prevState.Tickets.filter(
+        (ticketId) => ticketId !== row.original._id
+      ),
+    }));
+
     setDeletePopup(false);
   };
 
