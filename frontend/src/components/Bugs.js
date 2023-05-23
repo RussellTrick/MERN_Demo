@@ -9,6 +9,7 @@ import {
   getTicketById,
   deleteTicket,
   createTicket,
+  updateTicket,
 } from "../services/TicketService";
 import Modal from "./Modal";
 import { getProjectById } from "../services/ProjectService";
@@ -35,8 +36,14 @@ const Bugs = () => {
   const [errMsg, setErrMsg] = useState();
   const [deleteConfirmationState, setDeleteConfirmationState] = useState("");
   const [newBugPopup, setNewBugPopup] = useState(false);
+  const [editBugPopup, setEditBugPopup] = useState(false);
+
   const bugName = useRef();
   const bugDescription = useRef();
+  const bugEditName = useRef();
+  const bugEditDescription = useRef();
+
+  const [editBug, setEditBug] = useState();
   const [newBug, setNewBug] = useState({
     Status: "Incomplete",
     Urgency: "Normal",
@@ -110,32 +117,49 @@ const Bugs = () => {
       Urgency: "Normal",
     });
 
-    const updateProjectState = async () => {
-      if (projectStateUpdate._id) {
-        const updatedState = await getProjectById(
-          { setErrMsg },
-          projectStateUpdate?._id
-        );
-        setProjectStateUpdate(updatedState.data.project);
-      } else {
-        console.log("Id missing");
-        console.log(projectStateUpdate);
-      }
-    };
-
     await updateProjectState();
     setNewBugPopup(false);
   };
 
-  const handleNewBugOnChange = (e) => {
+  const updateProjectState = async () => {
+    if (projectStateUpdate._id) {
+      const updatedState = await getProjectById(
+        { setErrMsg },
+        projectStateUpdate?._id
+      );
+      setProjectStateUpdate(updatedState.data.project);
+    } else {
+      console.log("Id missing");
+      console.log(projectStateUpdate);
+    }
+  };
+
+  const handleEditBugClick = async (e) => {
+    e.preventDefault();
+    const formData = { ...editBug };
+
+    formData["Name"] = editBug.Name;
+    formData["Description"] = editBug.Description;
+
+    await updateTicket({ setErrMsg }, editBug);
+    await updateProjectState();
+    setEditBugPopup(false);
+  };
+
+  const selectEditBugFromRowId = async (row) => {
+    const arr = bugData.filter((item) => item._id === row.original._id);
+
+    setEditBug(arr[0]);
+    setEditBugPopup(true);
+  };
+
+  const handleBugOnChange = (e, setState, State) => {
     const fieldName = e.target.getAttribute("name");
     const fieldValue = e.target.value;
-
-    const newFormData = { ...newBug };
+    const newFormData = { ...State };
 
     newFormData[fieldName] = fieldValue;
-
-    setNewBug(newFormData);
+    setState(newFormData);
   };
 
   return (
@@ -204,6 +228,7 @@ const Bugs = () => {
                     ? [{ Name: "No Data" }]
                     : bugData
                 }
+                onClick={selectEditBugFromRowId}
                 onContextMenu={deleteConfirmation}
               />
             </div>
@@ -232,7 +257,7 @@ const Bugs = () => {
           </div>
         </div>
       </Modal>
-      {/* Bug delete confirmation modal */}
+      {/* Bug Delete Modal */}
       <Modal trigger={deletePopup} setTrigger={setDeletePopup}>
         <div className="select-container">
           <div className="grid1">
@@ -291,7 +316,10 @@ const Bugs = () => {
 
             <div className="grid2">
               <label htmlFor="Status">Status</label>
-              <select onChange={handleNewBugOnChange} name="Status">
+              <select
+                onChange={(e) => handleBugOnChange(e, setNewBug, newBug)}
+                name="Status"
+              >
                 <option value="Incomplete">Incomplete</option>
                 <option value="Complete">Complete</option>
               </select>
@@ -300,9 +328,64 @@ const Bugs = () => {
             <div className="grid2">
               <label htmlFor="Urgency">Priority</label>
               <select
-                onChange={handleNewBugOnChange}
+                onChange={(e) => handleBugOnChange(e, setNewBug, newBug)}
                 name="Urgency"
                 defaultValue="Normal"
+              >
+                <option value="Critical">Critical</option>
+                <option value="Normal">Normal</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <button className="project-btn">Submit</button>
+          </div>
+        </form>
+      </Modal>
+      {/* Edit Bug Modal */}
+      <Modal trigger={editBugPopup} setTrigger={setEditBugPopup}>
+        <h2>Currently Editing: {editBug?.Name || ""}</h2>
+        <form onSubmit={handleEditBugClick}>
+          <div className="select-container">
+            <div className="grid1">
+              <label htmlFor="Name">Name</label>
+              <input
+                required="required"
+                autoFocus
+                name="Name"
+                ref={bugEditName}
+                defaultValue={editBug?.Name}
+              ></input>
+            </div>
+
+            <div className="grid1">
+              <label htmlFor="Description">Description</label>
+              <textarea
+                ref={bugEditDescription}
+                required="required"
+                name="Description"
+                rows="6"
+                defaultValue={editBug?.Description}
+              ></textarea>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="Status">Status</label>
+              <select
+                onChange={(e) => handleBugOnChange(e, setEditBug, editBug)}
+                name="Status"
+                defaultValue={editBug?.Status || "Incomplete"}
+              >
+                <option value="Incomplete">Incomplete</option>
+                <option value="Complete">Complete</option>
+              </select>
+            </div>
+
+            <div className="grid2">
+              <label htmlFor="Urgency">Priority</label>
+              <select
+                onChange={(e) => handleBugOnChange(e, setEditBug, editBug)}
+                name="Urgency"
+                defaultValue={editBug?.Urgency || "Normal"}
               >
                 <option value="Critical">Critical</option>
                 <option value="Normal">Normal</option>

@@ -45,3 +45,33 @@ export async function createTicket({ setErrMsg }, data) {
     setErrMsg(err);
   }
 }
+
+export async function updateTicket({ setErrMsg }, ticketUpdateState) {
+  if (!ticketUpdateState._id) {
+    setErrMsg("Cannot update project: Ticket Id is missing");
+    console.log("Cannot update project missing Is`");
+    return;
+  }
+
+  const ticketId = ticketUpdateState._id;
+
+  axiosPrivate
+    .put(
+      `/tickets/${ticketId}`,
+      {
+        Name: ticketUpdateState.Name,
+        Description: ticketUpdateState.Description,
+        Project: ticketUpdateState.Project,
+        Status: ticketUpdateState.Status,
+        Urgency: ticketUpdateState.Urgency,
+      },
+      { withCredentials: true }
+    )
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.error(err);
+      setErrMsg(err);
+    });
+}
