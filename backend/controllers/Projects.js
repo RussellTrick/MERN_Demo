@@ -162,3 +162,26 @@ exports.addTicketToProject = async (req, res, next) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.getCountByUrgency = async (req, res) => {
+  try {
+    const urgencysCounts = await Project.aggregate([
+      {
+        $group: {
+          _id: "$Urgency",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const response = {};
+    urgencysCounts.forEach((result) => {
+      response[result._id] = result.count;
+    });
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

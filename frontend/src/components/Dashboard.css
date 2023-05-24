@@ -65,6 +65,19 @@ body {
   border-right: solid 5px #ff2530;
 }
 
+.pie-status ul li:nth-child(2) {
+  border-right: solid 5px #ff2530;
+}
+
+.pie-status ul li:nth-child(1) {
+  border-right: solid 5px #009b83;
+}
+
+.pie-container ul li {
+  display: flex;
+  justify-content: right;
+}
+
 .chart-container {
   display: flex;
   flex-direction: row;

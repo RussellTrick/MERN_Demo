@@ -125,19 +125,19 @@ export function updateProject({ setErrMsg }, projectStateUpdate) {
     });
 }
 
-export function deleteProject({ setErrMsg }, projectId) {
-  axios
-    .delete(`/projects/${projectId}`, { withCredentials: true })
-    .then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        deleteProjectFromUser(projectId);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      // handle the error here
+export async function deleteProject({ setErrMsg }, projectId) {
+  try {
+    const response = await axios.delete(`/projects/${projectId}`, {
+      withCredentials: true,
     });
+
+    if (response.status === 200) {
+      await deleteProjectFromUser(projectId);
+    }
+  } catch (error) {
+    console.error(error);
+    setErrMsg(error);
+  }
 }
 
 export function deleteTicketFromProject(projectId, ticketId) {
@@ -170,5 +170,17 @@ export function addTicketToProject(projectId, ticketId) {
     .catch((error) => {
       console.error(error);
       throw error;
+    });
+}
+
+export function countProjectUrgency({ setErrMsg }) {
+  return axiosPrivate
+    .get(`/projects/count-urgency`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      setErrMsg(err);
     });
 }

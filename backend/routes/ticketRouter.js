@@ -6,7 +6,12 @@ const {
   deleteTicket,
   createTicket,
   updateTicket,
+  getCountByUrgency,
+  getCountByStatus,
 } = require("../controllers/Tickets");
+
+router.get("/count-urgency", getCountByUrgency);
+router.get("/count-status", getCountByStatus);
 
 router.get("/:ticketId", checkAuth, getTicketById);
 router.delete("/:ticketId", checkAuth, deleteTicket);

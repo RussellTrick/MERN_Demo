@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import "./Dashboard.css";
 import { PieChart } from "react-minimal-pie-chart";
-import DATA from "./MOCK_DATA.json";
 import Basictable from "./Basictable";
 import Project from "./Project";
 import { useState } from "react";
@@ -15,26 +14,14 @@ import {
   createProject,
   deleteProject,
   updateProject,
+  countProjectUrgency,
 } from "../services/ProjectService";
 import { useNavigate } from "react-router-dom";
 import { getUsers, getUserById } from "../services/UserService";
-
-//Map out data into array
-const urgencyData = DATA.map(function (index) {
-  return index.urgency;
-});
-//Counters
-const urgencyCount = {};
-//Loop array to get count of occurrences
-for (const num of urgencyData) {
-  urgencyCount[num] = (urgencyCount[num] || 0) + 1;
-}
-//Create data for the piechart
-const low = urgencyCount["low"] ? parseInt(urgencyCount["low"]) : 0;
-const critical = urgencyCount["critical"]
-  ? parseInt(urgencyCount["critical"])
-  : 0;
-const normal = urgencyCount["normal"] ? parseInt(urgencyCount["normal"]) : 0;
+import {
+  countTicketUrgency,
+  countTicketStatus,
+} from "../services/TicketService";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
@@ -43,8 +30,6 @@ const PROJECTCOLUMNS = [
 ];
 
 const SELECTIONCOLUMNS = [{ Header: "FULLNAME", accessor: "FullName" }];
-
-// TODO Create different pie charts
 
 const Dashboard = () => {
   const {
@@ -69,6 +54,10 @@ const Dashboard = () => {
   const [projectTableData, setProjectTableData] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const navigate = useNavigate();
+
+  const [projectUrgency, setProjectUrgency] = useState({});
+  const [ticketUrgency, setTicketUrgency] = useState({});
+  const [ticketStatus, setTicketStatus] = useState({});
 
   //Disable right click, context menu and load intial projects
   useEffect(() => {
@@ -131,6 +120,16 @@ const Dashboard = () => {
       setProjectTableData(projectsWithTeamLeadNames);
     };
     fetchData();
+
+    const updatePies = async () => {
+      const ticketstatus = await countTicketStatus({ setErrMsg });
+      setTicketStatus(ticketstatus);
+      const ticketurgency = await countTicketUrgency({ setErrMsg });
+      setTicketUrgency(ticketurgency);
+      const projecturgency = await countProjectUrgency({ setErrMsg });
+      setProjectUrgency(projecturgency);
+    };
+    updatePies();
   }, [projects]);
 
   const [deleteConfirmationState, setDeleteConfirmationState] =
@@ -314,12 +313,18 @@ const Dashboard = () => {
     setDeletePopup(true);
   };
 
-  const deleteRow = (row) => {
+  const deleteRow = async (row) => {
     setProjectTableData(
       projectTableData.filter((current) => current._id !== row.original._id)
     );
-    deleteProject({ setErrMsg }, row.original._id);
-    setDeletePopup(false);
+    try {
+      await deleteProject({ setErrMsg }, row.original._id);
+      await fetchProjectIDs();
+      setDeletePopup(false);
+    } catch (error) {
+      setErrMsg(error);
+      console.error(error);
+    }
   };
 
   const selectEditProjectFromRowId = async (row) => {
@@ -645,88 +650,96 @@ const Dashboard = () => {
         {/* Pie charts */}
         <div className="chart-container">
           <div className="pie-wrapper">
-            <h2>Tickets by Priority</h2>
+            <h2>Tickets by Urgnecy</h2>
             <div className="pie-container">
               <PieChart
                 style={{ height: "150px" }}
                 data={[
-                  { label: {}, title: "Low", value: low, color: "#009B83" },
+                  {
+                    label: {},
+                    title: "Low",
+                    value: ticketUrgency.Low || 0,
+                    color: "#009B83",
+                  },
                   {
                     label: {},
                     title: "Normal",
-                    value: normal,
+                    value: ticketUrgency.Normal || 0,
                     color: "#FFA825",
                   },
                   {
                     label: {},
                     title: "Critical",
-                    value: critical,
+                    value: ticketUrgency.Critical || 0,
                     color: "#FF2530",
                   },
                 ]}
               />
               <ul>
-                <li>Critical: {critical}</li>
-                <li>Normal: {normal}</li>
-                <li>Low: {low}</li>
+                <li>Critical: {ticketUrgency.Critical || 0}</li>
+                <li>Normal: {ticketUrgency.Normal || 0}</li>
+                <li>Low: {ticketUrgency.Low || 0}</li>
               </ul>
             </div>
           </div>
 
           <div className="pie-wrapper">
-            <h2>Tickets by Priority</h2>
-            <div className="pie-container">
+            <h2>Tickets by Status</h2>
+            <div className="pie-container pie-status">
               <PieChart
                 style={{ height: "150px" }}
                 data={[
-                  { label: {}, title: "Low", value: low, color: "#009B83" },
                   {
                     label: {},
-                    title: "Normal",
-                    value: normal,
-                    color: "#FFA825",
+                    title: "Complete",
+                    value: ticketStatus.Complete || 0,
+                    color: "#009B83",
                   },
                   {
                     label: {},
-                    title: "Critical",
-                    value: critical,
+                    title: "Incomplete",
+                    value: ticketStatus.Incomplete || 0,
                     color: "#FF2530",
                   },
                 ]}
               />
               <ul>
-                <li>Critical: {critical}</li>
-                <li>Normal: {normal}</li>
-                <li>Low: {low}</li>
+                <li>Complete: {ticketStatus.Complete || 0}</li>
+                <li>Incomplete: {ticketStatus.Incomplete || 0}</li>
               </ul>
             </div>
           </div>
 
           <div className="pie-wrapper">
-            <h2>Tickets by Priority</h2>
+            <h2>Projects by Urgency</h2>
             <div className="pie-container">
               <PieChart
                 style={{ height: "150px" }}
                 data={[
-                  { label: {}, title: "Low", value: low, color: "#009B83" },
+                  {
+                    label: {},
+                    title: "Low",
+                    value: projectUrgency.Low || 0,
+                    color: "#009B83",
+                  },
                   {
                     label: {},
                     title: "Normal",
-                    value: normal,
+                    value: projectUrgency.Normal || 0,
                     color: "#FFA825",
                   },
                   {
                     label: {},
                     title: "Critical",
-                    value: critical,
+                    value: projectUrgency.Critical || 0,
                     color: "#FF2530",
                   },
                 ]}
               />
               <ul>
-                <li>Critical: {critical}</li>
-                <li>Normal: {normal}</li>
-                <li>Low: {low}</li>
+                <li>Critical: {projectUrgency.Critical || 0}</li>
+                <li>Normal: {projectUrgency.Normal || 0}</li>
+                <li>Low: {projectUrgency.Low || 0}</li>
               </ul>
             </div>
           </div>

@@ -75,3 +75,27 @@ export async function updateTicket({ setErrMsg }, ticketUpdateState) {
       setErrMsg(err);
     });
 }
+
+export async function countTicketUrgency({ setErrMsg }) {
+  return axiosPrivate
+    .get(`/tickets/count-urgency`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      setErrMsg(err);
+    });
+}
+
+export async function countTicketStatus({ setErrMsg }) {
+  return axiosPrivate
+    .get(`/tickets/count-status`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      setErrMsg(err);
+    });
+}

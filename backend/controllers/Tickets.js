@@ -84,3 +84,49 @@ exports.updateTicket = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.getCountByUrgency = async (req, res) => {
+  try {
+    const urgencyCounts = await Ticket.aggregate([
+      {
+        $group: {
+          _id: "$Urgency",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const response = {};
+    urgencyCounts.forEach((result) => {
+      response[result._id] = result.count;
+    });
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getCountByStatus = async (req, res) => {
+  try {
+    const statusCounts = await Ticket.aggregate([
+      {
+        $group: {
+          _id: "$Status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const response = {};
+    statusCounts.forEach((result) => {
+      response[result._id] = result.count;
+    });
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
