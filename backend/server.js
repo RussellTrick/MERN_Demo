@@ -14,6 +14,7 @@ const userRouter = require("./routes/Router");
 const projectRouter = require("./routes/projectRouter");
 const ticketRouter = require("./routes/ticketRouter");
 
+app.use(express.static("frontend/build"));
 app.use(express.json());
 app.use(
   cors({
@@ -27,5 +28,5 @@ app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/tickets", ticketRouter);
 
 app.listen(PORT, () => {
-  console.log("listening on http://localhost:" + PORT);
+  console.log("listening on port:" + PORT);
 });
