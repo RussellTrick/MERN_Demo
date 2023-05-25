@@ -2,7 +2,7 @@ const UserModel = require("../models/Users");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
-const allowedOrigin = process.env.ALLOWED_ORIGIN;
+const domainOrigin = process.env.DOMAIN_ORIGIN;
 
 exports.register = async (req, res, next) => {
   try {
@@ -35,7 +35,7 @@ exports.login = async (req, res, next) => {
     console.log(token);
 
     res.cookie("token", token, {
-      domain: allowedOrigin,
+      domain: domainOrigin,
       sameSite: "none",
       secure: true,
       httpOnly: true,
