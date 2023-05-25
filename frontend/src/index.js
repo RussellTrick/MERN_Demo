@@ -6,7 +6,7 @@ import { AuthProvider } from "./context/AuthProvider";
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/">
       <AuthProvider>
         <Routes>
           <Route path="/*" element={<App />} />

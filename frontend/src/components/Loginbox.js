@@ -72,9 +72,8 @@ const Loginbox = () => {
         </div>
 
         <div>
-          <a href="#" className="forgot-password" style={{ color: "#4070F5" }}>
-            Forgot password?
-          </a>
+          {/* <a href="#" className="forgot-password" style={{ color: "#4070F5" }}> */}
+          Forgot password?
         </div>
 
         <input type="submit" className="btn-submit"></input>
