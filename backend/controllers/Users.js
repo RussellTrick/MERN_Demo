@@ -34,6 +34,8 @@ exports.login = async (req, res, next) => {
     console.log(token);
 
     res.cookie("token", token, {
+      sameSite: "none",
+      secure: true,
       httpOnly: true,
       path: "/",
     });
