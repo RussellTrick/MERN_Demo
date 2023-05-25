@@ -19,7 +19,8 @@ exports.register = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const { Email, Password } = req.body;
-    const user = await UserModel.findOne({ Email });
+
+    const user = await UserModel.findOne({ Email: Email.toLowerCase() });
 
     if (!user) {
       return res.status(401).json(console.log("401 Not Found"));
