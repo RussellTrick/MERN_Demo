@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const connection = require("./db");
 const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:3000";
 const PORT = process.env.PORT || 8000;
+const domainOrigin = process.env.DOMAIN_ORIGIN;
 //database connection
 connection();
 
@@ -28,5 +29,5 @@ app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/tickets", ticketRouter);
 
 app.listen(PORT, () => {
-  console.log("listening on port:" + PORT);
+  console.log("listening on port:" + PORT + "~ Domain origin: " + domainOrigin);
 });
