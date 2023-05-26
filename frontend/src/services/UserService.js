@@ -28,11 +28,17 @@ export async function SignIn({ setErrMsg }, user, pwd, callback) {
     });
 }
 
-export async function SignUp({ setErrMsg }, user, pwd) {
+export async function SignUp(
+  { setErrMsg },
+  Email,
+  Password,
+  FirstName,
+  LastName
+) {
   const response = axios({
     method: "post",
     url: "/users/register",
-    data: { Email: user, Password: pwd },
+    data: { Email, Password, FirstName, LastName },
     withCredentials: true,
   })
     .then((res) => console.log(res))

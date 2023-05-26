@@ -9,6 +9,9 @@ const Register = () => {
 
   const [user, setUser] = useState("");
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
@@ -48,12 +51,8 @@ const Register = () => {
       return;
     }
     try {
-      const response = await SignUp({ setErrMsg }, user, pwd);
-      console.log(response.data);
-      console.log(response.token);
-      console.log(JSON.stringify(response));
+      await SignUp({ setErrMsg }, user, pwd, firstName, lastName);
       setSuccess(true);
-      //TODO: clear input fields
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No server response");
@@ -97,12 +96,25 @@ const Register = () => {
               required
             />
 
-            <label
-              htmlFor="
-        pwd"
-            >
-              Password:
-            </label>
+            <label htmlFor="firstName">First Name:</label>
+            <input
+              id="firstName"
+              type="text"
+              required
+              onChange={(e) => setFirstName(e.target.value)}
+              autoComplete="off"
+            ></input>
+
+            <label htmlFor="lastName">Last Name:</label>
+            <input
+              id="lastName"
+              type="text"
+              required
+              onChange={(e) => setLastName(e.target.value)}
+              autoComplete="off"
+            ></input>
+
+            <label htmlFor="pwd">Password:</label>
             <input
               type="password"
               id="pwd"

@@ -6,9 +6,14 @@ const domainOrigin = process.env.DOMAIN_ORIGIN;
 
 exports.register = async (req, res, next) => {
   try {
-    const { Email, Password } = req.body;
+    const { Email, Password, FirstName, LastName } = req.body;
     const hashedPassword = await bcrypt.hash(Password, 10);
-    const user = new UserModel({ Email, Password: hashedPassword });
+    const user = new UserModel({
+      Email,
+      Password: hashedPassword,
+      FirstName,
+      LastName,
+    });
     await user.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
