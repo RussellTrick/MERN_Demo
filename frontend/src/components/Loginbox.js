@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./Loginbox.css";
 import { useNavigate } from "react-router-dom";
 import { SignIn } from "../services/UserService";
@@ -72,8 +73,9 @@ const Loginbox = () => {
         </div>
 
         <div>
-          {/* <a href="#" className="forgot-password" style={{ color: "#4070F5" }}> */}
-          Forgot password?
+          <Link to="#" className="forgot-password custom-link">
+            Forgot password?
+          </Link>
         </div>
 
         <input type="submit" className="btn-submit"></input>
@@ -81,9 +83,9 @@ const Loginbox = () => {
 
       <div className="register-link">
         Don't have an account?
-        <a href="/register" style={{ color: "#4070F5" }}>
+        <Link to="/register" className="custom-link">
           &nbsp;Signup now
-        </a>
+        </Link>
       </div>
     </section>
   );

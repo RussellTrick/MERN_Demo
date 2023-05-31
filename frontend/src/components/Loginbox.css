@@ -91,6 +91,11 @@ body {
   border-radius: 5px;
 }
 
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .register-link {
   position: relative;
   margin-top: 10px;
@@ -99,6 +104,38 @@ body {
   font-size: 14px;
 }
 
-.register-link a {
+.register-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-box input {
+  width: 50%;
+}
+
+.instructions {
+  color: #ff2530;
+}
+
+.offscreen {
+  display: none;
+}
+
+.custom-link {
+  color: #4070f5 !important;
   text-decoration: none;
+}
+
+.register-box input {
+  color: #fff;
+  font-size: 16px;
+  border: 1px solid hsl(220, 8%, 40%);
+  border-radius: 3px;
+  outline: none;
+  background: transparent;
+  margin-bottom: 5px;
+}
+
+.register-box input:focus {
+  border-color: #03e9f4;
 }

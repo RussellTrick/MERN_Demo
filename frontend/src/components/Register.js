@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { SignUp } from "../services/UserService";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,24}$/;
@@ -76,7 +77,7 @@ const Register = () => {
           </p>
         </section>
       ) : (
-        <section>
+        <section className="login-form">
           <p
             ref={errRef}
             className={errMsg ? "errmsg" : "offscreen"}
@@ -86,70 +87,76 @@ const Register = () => {
           </p>
           <h2>Register</h2>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Email:</label>
-            <input
-              type="email"
-              id="username"
-              ref={userRef}
-              onChange={(e) => setUser(e.target.value)}
-              autoComplete="off"
-              required
-            />
+            <div className="register-box">
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                ref={userRef}
+                onChange={(e) => setUser(e.target.value)}
+                autoComplete="off"
+                required
+              />
+            </div>
 
-            <label htmlFor="firstName">First Name:</label>
-            <input
-              id="firstName"
-              type="text"
-              required
-              onChange={(e) => setFirstName(e.target.value)}
-              autoComplete="off"
-            ></input>
+            <div className="register-box">
+              <label htmlFor="firstName">First Name:</label>
+              <input
+                id="firstName"
+                type="text"
+                required
+                onChange={(e) => setFirstName(e.target.value)}
+                autoComplete="off"
+              ></input>
+            </div>
 
-            <label htmlFor="lastName">Last Name:</label>
-            <input
-              id="lastName"
-              type="text"
-              required
-              onChange={(e) => setLastName(e.target.value)}
-              autoComplete="off"
-            ></input>
+            <div className="register-box">
+              <label htmlFor="lastName">Last Name:</label>
+              <input
+                id="lastName"
+                type="text"
+                required
+                onChange={(e) => setLastName(e.target.value)}
+                autoComplete="off"
+              ></input>
+            </div>
 
-            <label htmlFor="pwd">Password:</label>
-            <input
-              type="password"
-              id="pwd"
-              onChange={(e) => setPwd(e.target.value)}
-              required
-              aria-invalid={validPwd ? "false" : "true"}
-              aria-describedby="pwdnote"
-              onFocus={() => setPwdFocus(true)}
-              onBlur={() => setPwdFocus(false)}
-            />
+            <div className="register-box">
+              <label htmlFor="pwd">Password:</label>
+              <input
+                type="password"
+                id="pwd"
+                onChange={(e) => setPwd(e.target.value)}
+                required
+                aria-invalid={validPwd ? "false" : "true"}
+                aria-describedby="pwdnote"
+                onFocus={() => setPwdFocus(true)}
+                onBlur={() => setPwdFocus(false)}
+              />
+            </div>
+
+            <div className="register-box">
+              <label htmlFor="confirm_pwd">Confirm Password:</label>
+              <input
+                type="password"
+                id="confirm_pwd"
+                onChange={(e) => setMatchPwd(e.target.value)}
+                required
+                aria-invalid={validMatch ? "false" : "true"}
+                aria-describedby="confirmnote"
+                onFocus={() => setMatchFocus(true)}
+                onBlur={() => setMatchFocus(false)}
+              />
+            </div>
+
             <p
               id="pwdnote"
-              className={pwdFocus && !validPwd ? "instructions" : "offscren"}
+              className={pwdFocus && !validPwd ? "instructions" : "offscreen"}
             >
               8 to 24 characters.
               <br />
               Must include an Uppercase letter, a number.
             </p>
-
-            <label
-              htmlFor="
-        confirm_pwd"
-            >
-              Confirm Password:
-            </label>
-            <input
-              type="password"
-              id="confirm_pwd"
-              onChange={(e) => setMatchPwd(e.target.value)}
-              required
-              aria-invalid={validMatch ? "false" : "true"}
-              aria-describedby="confirmnote"
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
-            />
             <p
               id="pwdnote"
               className={
@@ -158,18 +165,23 @@ const Register = () => {
             >
               Passwords much match.
             </p>
-
-            <button disabled={!validPwd || !validMatch ? true : false}>
-              Sign up
-            </button>
+            <div className="register-box">
+              <button
+                className="btn-submit"
+                disabled={!validPwd || !validMatch ? true : false}
+              >
+                Sign up
+              </button>
+            </div>
           </form>
-          <p>
-            Already registered?
-            <br />
-            <span>
-              <a href="/login">Sign in</a>
-            </span>
-          </p>
+          <div className="register-box">
+            <p>
+              Already registered? Please{" "}
+              <Link to="/login" className="custom-link">
+                Sign in
+              </Link>
+            </p>
+          </div>
         </section>
       )}
     </>
