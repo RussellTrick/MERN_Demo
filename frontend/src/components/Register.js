@@ -165,7 +165,7 @@ const Register = () => {
             >
               Passwords much match.
             </p>
-            <div className="register-box">
+            <div>
               <button
                 className="btn-submit"
                 disabled={!validPwd || !validMatch ? true : false}
@@ -174,13 +174,11 @@ const Register = () => {
               </button>
             </div>
           </form>
-          <div className="register-box">
-            <p>
-              Already registered? Please{" "}
-              <Link to="/login" className="custom-link">
-                Sign in
-              </Link>
-            </p>
+          <div className="register-link">
+            Already registered? Please
+            <Link to="/login" className="custom-link">
+              &nbsp;Sign in
+            </Link>
           </div>
         </section>
       )}
