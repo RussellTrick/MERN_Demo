@@ -1,5 +1,5 @@
 # MERN_Demo
-A MERN stack application
+A MERN stack application<br>
 Early live build: https://helpful-biscotti-f40943.netlify.app/login
 
 ## Notes
