@@ -38,7 +38,7 @@ export async function SignUp(
   const response = axios({
     method: "post",
     url: "/users/register",
-    data: { Email, Password, FirstName, LastName },
+    data: { Email: Email.toLowerCase(), Password, FirstName, LastName },
     withCredentials: true,
   })
     .then((res) => console.log(res))
