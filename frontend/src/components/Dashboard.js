@@ -320,6 +320,7 @@ const Dashboard = () => {
     try {
       await deleteProject({ setErrMsg }, row.original._id);
       await fetchProjectIDs();
+      setProjectStateUpdate(defaultProjectState);
       setDeletePopup(false);
     } catch (error) {
       setErrMsg(error);
