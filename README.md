@@ -6,6 +6,7 @@ This is an open-source Bug Tracker using the MERN stack. It is bootstrapped with
 
 > **Warning**
 > This project is still in development and is not ready for production use.
+> 
 > While measures have been made to secure data from attacks, if signing up please avoid sensitive information
 
 ## Tech Stack
