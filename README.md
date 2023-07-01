@@ -1,8 +1,8 @@
-# [MERN_Demo] (https://helpful-biscotti-f40943.netlify.app/login)
+# [MERN_Demo](https://helpful-biscotti-f40943.netlify.app/login)
 
 This is an open-source Bug Tracker using the MERN stack. It is bootstrapped with `create-react-app`.
 
-[Live build] (https://helpful-biscotti-f40943.netlify.app/login)
+[Live build](https://helpful-biscotti-f40943.netlify.app/login)
 
 > **Warning**
 > This project is still in development and is not ready for production use.
@@ -11,10 +11,10 @@ This is an open-source Bug Tracker using the MERN stack. It is bootstrapped with
 
 ## Tech Stack
 
-- [MongoDb] (https://www.mongodb.com)
-- [Express.js] (https://expressjs.com)
-- [React] (https://react.dev)
-- [Node.js] (https://nodejs.org)
+- [MongoDb](https://www.mongodb.com)
+- [Express.js](https://expressjs.com)
+- [React](https://react.dev)
+- [Node.js](https://nodejs.org)
 
 ## Notes
 
