@@ -2,7 +2,7 @@
 
 This is an open-source Bug Tracker using the MERN stack. It is bootstrapped with `create-react-app`.
 
-[![Screenshot of MERN app](Capture.JPG)](https://helpful-biscotti-f40943.netlify.app/login)
+[![Screenshot of MERN app](Capture)](https://helpful-biscotti-f40943.netlify.app/login)
 [Live build](https://helpful-biscotti-f40943.netlify.app/login)
 
 > **Warning**
