@@ -19,5 +19,13 @@ This is an open-source Bug Tracker using the MERN stack. It is bootstrapped with
 
 ## Notes
 
-- **Test credentials:** user: Yellow@hotmail.com password: Yellow123!
+**Test credentials:**<br>
+User:
+```
+Yellow@hotmail.com
+```
+Password:
+```
+Yellow123!
+```
 - If using the live build, please wait as the backend needs to wake up before calls are made.
