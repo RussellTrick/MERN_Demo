@@ -60,7 +60,7 @@ const Register = () => {
   return (
     <>
       {success ? (
-        <section>
+        <section className="login-form">
           <h1>Account successfully created!</h1>
           <p>
             <a href="/login">Sign In</a>

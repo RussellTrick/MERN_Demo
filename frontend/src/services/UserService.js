@@ -35,7 +35,7 @@ export async function SignUp(
   FirstName,
   LastName
 ) {
-  axios
+  return axios
     .post(
       "/users/register",
       { Email: Email.toLowerCase(), Password, FirstName, LastName },
@@ -47,16 +47,12 @@ export async function SignUp(
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
         setErrMsg("Invalid Email Address");
-        return Promise.reject(err.response);
       } else if (err.response?.status === 401) {
         setErrMsg("Unauthorised");
-        return Promise.reject(err.response);
       } else if (err.response?.status === 409) {
         setErrMsg("Email Address already in use");
-        return Promise.reject(err.response);
       } else {
         setErrMsg("Registration failed");
-        return Promise.reject(err.response);
       }
     });
 }
