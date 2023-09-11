@@ -35,12 +35,12 @@ export async function SignUp(
   FirstName,
   LastName
 ) {
-  const response = axios({
-    method: "post",
-    url: "/users/register",
-    data: { Email: Email.toLowerCase(), Password, FirstName, LastName },
-    withCredentials: true,
-  })
+  axios
+    .post(
+      "/users/register",
+      { Email: Email.toLowerCase(), Password, FirstName, LastName },
+      { withCredentials: true }
+    )
     .then((res) => console.log(res))
     .catch(function (err) {
       if (!err?.response) {
@@ -55,7 +55,6 @@ export async function SignUp(
         setErrMsg("Registration failed");
       }
     });
-  return response;
 }
 
 export function SignOut({ setErrMsg }, callback) {

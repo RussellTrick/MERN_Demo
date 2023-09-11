@@ -50,18 +50,8 @@ const Register = () => {
       return;
     }
     try {
-      const response = await SignUp(
-        { setErrMsg },
-        user,
-        pwd,
-        firstName,
-        lastName
-      );
-      if (response && response.data && response.data.error) {
-        setErrMsg(response.data.error);
-      } else {
-        setSuccess(true);
-      }
+      await SignUp({ setErrMsg }, user, pwd, firstName, lastName);
+      setSuccess(true);
     } catch (err) {
       errRef.current.focus();
     }
