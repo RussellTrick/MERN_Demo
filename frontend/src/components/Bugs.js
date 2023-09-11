@@ -176,7 +176,7 @@ const Bugs = () => {
       {loading ? (
         <div className="flex-center">
           <div className="blue-bar"></div>
-          <JellyTriangle size={80} speed={1.75} color="#03E9F4" />
+          <JellyTriangle size={80} speed={0.5} color="#03E9F4" />
         </div>
       ) : (
         <>
