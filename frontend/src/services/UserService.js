@@ -49,6 +49,8 @@ export async function SignUp(
         setErrMsg("Invalid Email Address");
       } else if (err.response?.status === 401) {
         setErrMsg("Unauthorised");
+      } else if (err.response?.status === 409) {
+        setErrMsg("Email Address already in use");
       } else {
         setErrMsg("Registration failed");
       }

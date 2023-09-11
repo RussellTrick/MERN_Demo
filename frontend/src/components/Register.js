@@ -53,14 +53,6 @@ const Register = () => {
       await SignUp({ setErrMsg }, user, pwd, firstName, lastName);
       setSuccess(true);
     } catch (err) {
-      if (!err?.response) {
-        setErrMsg("No server response");
-      } else if (err.response?.status === 409) {
-        setErrMsg("Email already in use");
-      } else {
-        setErrMsg("Registration failed");
-        console.log(err);
-      }
       errRef.current.focus();
     }
   };
