@@ -54,6 +54,7 @@ export async function SignUp(
       } else {
         setErrMsg("Registration failed");
       }
+      throw err;
     });
 }
 
