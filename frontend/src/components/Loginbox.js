@@ -73,9 +73,7 @@ const Loginbox = () => {
         </div>
 
         <div>
-          <Link to="#" className="forgot-password custom-link">
-            Forgot password?
-          </Link>
+          <Link to="#" className="forgot-password custom-link"></Link>
         </div>
 
         <input type="submit" className="btn-submit"></input>

@@ -30,7 +30,6 @@ const Register = () => {
 
   useEffect(() => {
     const result = PWD_REGEX.test(pwd);
-    console.log(result);
     setValidPwd(result);
   }, [pwd]);
 
