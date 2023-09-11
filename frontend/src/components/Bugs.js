@@ -145,8 +145,10 @@ const Bugs = () => {
     e.preventDefault();
     const formData = { ...editBug };
 
-    formData["Name"] = bugEditName.current.value;
-    formData["Description"] = bugEditDescription.current.value;
+    formData["Name"] = bugEditName?.current.value;
+    formData["Description"] = bugEditDescription?.current.value;
+    formData["Status"] = editBug?.Status;
+    formData["Urgency"] = editBug?.Urgency;
 
     await updateTicket({ setErrMsg }, formData);
     await updateProjectState();
