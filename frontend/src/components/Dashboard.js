@@ -22,7 +22,7 @@ import {
   countTicketUrgency,
   countTicketStatus,
 } from "../services/TicketService";
-import { NewtonsCradle } from "@uiball/loaders";
+import { JellyTriangle } from "@uiball/loaders";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
@@ -370,7 +370,7 @@ const Dashboard = () => {
       {loading ? (
         <div className="flex-center">
           <div className="blue-bar"></div>
-          <NewtonsCradle size={80} speed={0.5} color="#03E9F4" />
+          <JellyTriangle size={80} speed={1.75} color="#03E9F4" />
         </div>
       ) : (
         <>
