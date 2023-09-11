@@ -7,6 +7,13 @@ const domainOrigin = process.env.DOMAIN_ORIGIN;
 exports.register = async (req, res, next) => {
   try {
     const { Email, Password, FirstName, LastName } = req.body;
+
+    const existingUser = await UserModel.findOne({ Email });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
     const hashedPassword = await bcrypt.hash(Password, 10);
     const user = new UserModel({
       Email,
