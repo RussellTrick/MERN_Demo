@@ -148,7 +148,7 @@ const Bugs = () => {
     formData["Name"] = editBug.Name;
     formData["Description"] = editBug.Description;
 
-    await updateTicket({ setErrMsg }, editBug);
+    await updateTicket({ setErrMsg }, formData);
     await updateProjectState();
     setEditBugPopup(false);
   };
