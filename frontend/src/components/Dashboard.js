@@ -22,6 +22,7 @@ import {
   countTicketUrgency,
   countTicketStatus,
 } from "../services/TicketService";
+import { NewtonsCradle } from "@uiball/loaders";
 
 const PROJECTCOLUMNS = [
   { Header: "TITLE", accessor: "Title" },
@@ -53,6 +54,7 @@ const Dashboard = () => {
   const editDescription = useRef(null);
   const [projectTableData, setProjectTableData] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const [projectUrgency, setProjectUrgency] = useState({});
@@ -119,7 +121,6 @@ const Dashboard = () => {
 
       setProjectTableData(projectsWithTeamLeadNames);
     };
-    fetchData();
 
     const updatePies = async () => {
       const ticketstatus = await countTicketStatus({ setErrMsg });
@@ -129,7 +130,14 @@ const Dashboard = () => {
       const projecturgency = await countProjectUrgency({ setErrMsg });
       setProjectUrgency(projecturgency);
     };
-    updatePies();
+
+    const populateUI = async () => {
+      await fetchData();
+      await updatePies();
+      setLoading(false);
+    };
+
+    populateUI();
   }, [projects]);
 
   const [deleteConfirmationState, setDeleteConfirmationState] =
@@ -359,393 +367,405 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* Project delete confirmation modal */}
-      <Modal trigger={deletePopup} setTrigger={setDeletePopup}>
-        <div className="select-container">
-          <div className="grid1">
-            <h3>
-              Are you sure you want to delete:{" "}
-              {deleteConfirmationState?.original?.Title}
-              {"?"}
-            </h3>
-          </div>
-          <div className="grid2">
-            <button
-              className="project-btn red"
-              onClick={() => {
-                deleteRow(deleteConfirmationState);
-              }}
-            >
-              Delete
-            </button>
-          </div>
-          <div className="aiend grid2">
-            <button
-              className="project-btn"
-              onClick={() => setDeletePopup(false)}
-            >
-              Cancel
-            </button>
-          </div>
+      {loading ? (
+        <div className="flex-center">
+          <div className="blue-bar"></div>
+          <NewtonsCradle size={80} speed={0.5} color="#03E9F4" />
         </div>
-      </Modal>
-
-      {/* New project Modal */}
-      <Project
-        trigger={projectPopup}
-        setTrigger={setProjectPopup}
-        state={projectState}
-        setState={setProjectState}
-        defaultState={defaultProjectState}
-      >
-        <h3>New project</h3>
-
-        <form onSubmit={handleNewProjectSubmit}>
-          <div className="select-container">
-            <div className="grid1">
-              <label htmlFor="Title">Title</label>
-              <input
-                ref={inputTitle}
-                required="required"
-                autoFocus
-                name="Title"
-              ></input>
-            </div>
-
-            <div className="grid1">
-              <label htmlFor="Description">Description</label>
-              <textarea
-                ref={inputDescription}
-                required="required"
-                name="Description"
-                rows="6"
-              ></textarea>
-            </div>
-
-            <div className="grid2">
-              <label title="Click to add member">Choose Members</label>
-              <div className="new-project-table-container">
-                <Selectiontable
-                  DATA={allUsers}
-                  COLUMNS={SELECTIONCOLUMNS}
-                  HEADLESS
-                  FILTER
-                  PLACEHOLDER="Filter by Employee"
-                  onClick={newProjectAddMember}
-                  minRows={0}
-                />
+      ) : (
+        <>
+          {/* Project delete confirmation modal */}
+          <Modal trigger={deletePopup} setTrigger={setDeletePopup}>
+            <div className="select-container">
+              <div className="grid1">
+                <h3>
+                  Are you sure you want to delete:{" "}
+                  {deleteConfirmationState?.original?.Title}
+                  {"?"}
+                </h3>
+              </div>
+              <div className="grid2">
+                <button
+                  className="project-btn red"
+                  onClick={() => {
+                    deleteRow(deleteConfirmationState);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+              <div className="aiend grid2">
+                <button
+                  className="project-btn"
+                  onClick={() => setDeletePopup(false)}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
-
-            <div className="grid2">
-              <label
-                title="Left click to assign Team Lead | Right click to remove Members"
-                id="members"
-                style={{ color: "#FF2530" }}
-              >
-                Team Lead: {projectState?.TeamLeadName}
-              </label>
-              <div className="new-project-table-container">
-                <Selectiontable
-                  DATA={projectState.Members ? projectState.Members : []}
-                  COLUMNS={SELECTIONCOLUMNS}
-                  HEADLESS
-                  FILTER
-                  PLACEHOLDER="Filter by Employee"
-                  onClick={newProjectTeamLeadSelect}
-                  onContextMenu={newProjectRemoveMember}
-                  minRows={0}
-                />
-              </div>
-            </div>
-
-            <div className="grid2">
-              <label htmlFor="Status">Status</label>
-              <select onChange={handleNewProjectChange} name="Status">
-                <option value="Incomplete">Incomplete</option>
-                <option value="Complete">Complete</option>
-              </select>
-            </div>
-
-            <div className="grid2">
-              <label htmlFor="Urgency">Priority</label>
-              <select
-                onChange={handleNewProjectChange}
-                name="Urgency"
-                defaultValue="Normal"
-              >
-                <option value="Critical">Critical</option>
-                <option value="Normal">Normal</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-
-            <button className="project-btn">Submit</button>
-          </div>
-        </form>
-      </Project>
-
-      {/* Edit Project Modal */}
-      <Project trigger={editPopup} setTrigger={setEditPopup}>
-        <h3>
-          Currently Editing:{" "}
-          {projectStateUpdate
-            ? projectStateUpdate.Title
-            : "Project failed to load"}
-        </h3>
-
-        <form onSubmit={handleEditProjectSubmit}>
-          <div className="select-container">
-            <div className="grid1">
-              <label htmlFor="projectEdit">Title</label>
-              <input
-                required="required"
-                autoFocus
-                name="projectEdit"
-                defaultValue={projectStateUpdate?.Title}
-                ref={editTitle}
-              ></input>
-            </div>
-
-            <div className="grid1">
-              <label htmlFor="Description">Description</label>
-              <textarea
-                required="required"
-                name="descriptionEdit"
-                rows="6"
-                defaultValue={projectStateUpdate?.Description}
-                ref={editDescription}
-              ></textarea>
-            </div>
-
-            <div className="grid2">
-              <label title="Click to add member">Choose Members</label>
-              <div className="new-project-table-container">
-                <Selectiontable
-                  DATA={allUsers}
-                  COLUMNS={SELECTIONCOLUMNS}
-                  HEADLESS
-                  FILTER
-                  PLACEHOLDER="Filter by Employee"
-                  onClick={editProjectMemberAdd}
-                  minRows={0}
-                />
-              </div>
-            </div>
-
-            <div className="grid2">
-              <label
-                title="Left click to assign Team Lead | Right click to remove Members"
-                id="editProjectTeamLead"
-              >
-                Team Lead: {projectStateUpdate?.TeamLeadName}
-              </label>
-              <div className="new-project-table-container">
-                <Selectiontable
-                  DATA={
-                    projectStateUpdate.Members ? projectStateUpdate.Members : []
-                  }
-                  COLUMNS={SELECTIONCOLUMNS}
-                  HEADLESS
-                  FILTER
-                  PLACEHOLDER="Filter by Employee"
-                  onClick={editProjectTeamLeadSelect}
-                  onContextMenu={editProjectRemoveMember}
-                  minRows={0}
-                />
-              </div>
-            </div>
-
-            <div className="grid2">
-              <label htmlFor="Status">Status</label>
-              <select
-                onChange={handleEditProjectChange}
-                name="Status"
-                value={projectStateUpdate.Status || "Incomplete"}
-              >
-                <option value="Incomplete">Incomplete</option>
-                <option value="Complete">Complete</option>
-              </select>
-            </div>
-
-            <div className="grid2">
-              <label htmlFor="Urgency">Priority</label>
-              <select
-                onChange={handleEditProjectChange}
-                name="Urgency"
-                value={projectStateUpdate.Urgency || "Critical"}
-              >
-                <option value="Critical">Critical</option>
-                <option value="Normal">Normal</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-          </div>
-          <div className="btn-container">
-            <button className="project-btn">Submit</button>
-            <button
-              className="project-btn yellow"
-              onClick={handleBugsButtonClick}
-            >
-              Bugs {">>"}
-            </button>
-          </div>
-        </form>
-      </Project>
-
-      {/* Main help modal */}
-      <Modal trigger={helpPopup} setTrigger={setHelpPopup}>
-        <div className="grid2">
-          <h2 className="marginless" style={{ marginBottom: "7px" }}>
-            HELP
-          </h2>
-          <div
-            className="grid2"
-            style={{
-              border: "solid #9A9B9C 1px",
-              padding: "10px",
-            }}
+          </Modal>
+          {/* New project Modal */}
+          <Project
+            trigger={projectPopup}
+            setTrigger={setProjectPopup}
+            state={projectState}
+            setState={setProjectState}
+            defaultState={defaultProjectState}
           >
-            <p>- Click NEW PROJECT button to create a new Project.</p>
-            <p>- Left click on a project in the table to view or edit it.</p>
-            <p>- Right click on a project in the table to delete it.</p>
-          </div>
-        </div>
-      </Modal>
+            <h3>New project</h3>
 
-      {/* Main */}
-      <div className="dashboard-container">
-        <div className="blue-bar"></div>
-        <h4 className="page-title">DASHBOARD</h4>
-        <div className="project-container">
-          <div className="project-top-container">
-            <h3>Projects</h3>
-            <div style={{ display: "flex" }}>
-              <button
-                className="project-btn"
-                onClick={() => setProjectPopup(true)}
+            <form onSubmit={handleNewProjectSubmit}>
+              <div className="select-container">
+                <div className="grid1">
+                  <label htmlFor="Title">Title</label>
+                  <input
+                    ref={inputTitle}
+                    required="required"
+                    autoFocus
+                    name="Title"
+                  ></input>
+                </div>
+
+                <div className="grid1">
+                  <label htmlFor="Description">Description</label>
+                  <textarea
+                    ref={inputDescription}
+                    required="required"
+                    name="Description"
+                    rows="6"
+                  ></textarea>
+                </div>
+
+                <div className="grid2">
+                  <label title="Click to add member">Choose Members</label>
+                  <div className="new-project-table-container">
+                    <Selectiontable
+                      DATA={allUsers}
+                      COLUMNS={SELECTIONCOLUMNS}
+                      HEADLESS
+                      FILTER
+                      PLACEHOLDER="Filter by Employee"
+                      onClick={newProjectAddMember}
+                      minRows={0}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid2">
+                  <label
+                    title="Left click to assign Team Lead | Right click to remove Members"
+                    id="members"
+                    style={{ color: "#FF2530" }}
+                  >
+                    Team Lead: {projectState?.TeamLeadName}
+                  </label>
+                  <div className="new-project-table-container">
+                    <Selectiontable
+                      DATA={projectState.Members ? projectState.Members : []}
+                      COLUMNS={SELECTIONCOLUMNS}
+                      HEADLESS
+                      FILTER
+                      PLACEHOLDER="Filter by Employee"
+                      onClick={newProjectTeamLeadSelect}
+                      onContextMenu={newProjectRemoveMember}
+                      minRows={0}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid2">
+                  <label htmlFor="Status">Status</label>
+                  <select onChange={handleNewProjectChange} name="Status">
+                    <option value="Incomplete">Incomplete</option>
+                    <option value="Complete">Complete</option>
+                  </select>
+                </div>
+
+                <div className="grid2">
+                  <label htmlFor="Urgency">Priority</label>
+                  <select
+                    onChange={handleNewProjectChange}
+                    name="Urgency"
+                    defaultValue="Normal"
+                  >
+                    <option value="Critical">Critical</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+
+                <button className="project-btn">Submit</button>
+              </div>
+            </form>
+          </Project>
+          {/* Edit Project Modal */}
+          <Project trigger={editPopup} setTrigger={setEditPopup}>
+            <h3>
+              Currently Editing:{" "}
+              {projectStateUpdate
+                ? projectStateUpdate.Title
+                : "Project failed to load"}
+            </h3>
+
+            <form onSubmit={handleEditProjectSubmit}>
+              <div className="select-container">
+                <div className="grid1">
+                  <label htmlFor="projectEdit">Title</label>
+                  <input
+                    required="required"
+                    autoFocus
+                    name="projectEdit"
+                    defaultValue={projectStateUpdate?.Title}
+                    ref={editTitle}
+                  ></input>
+                </div>
+
+                <div className="grid1">
+                  <label htmlFor="Description">Description</label>
+                  <textarea
+                    required="required"
+                    name="descriptionEdit"
+                    rows="6"
+                    defaultValue={projectStateUpdate?.Description}
+                    ref={editDescription}
+                  ></textarea>
+                </div>
+
+                <div className="grid2">
+                  <label title="Click to add member">Choose Members</label>
+                  <div className="new-project-table-container">
+                    <Selectiontable
+                      DATA={allUsers}
+                      COLUMNS={SELECTIONCOLUMNS}
+                      HEADLESS
+                      FILTER
+                      PLACEHOLDER="Filter by Employee"
+                      onClick={editProjectMemberAdd}
+                      minRows={0}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid2">
+                  <label
+                    title="Left click to assign Team Lead | Right click to remove Members"
+                    id="editProjectTeamLead"
+                  >
+                    Team Lead: {projectStateUpdate?.TeamLeadName}
+                  </label>
+                  <div className="new-project-table-container">
+                    <Selectiontable
+                      DATA={
+                        projectStateUpdate.Members
+                          ? projectStateUpdate.Members
+                          : []
+                      }
+                      COLUMNS={SELECTIONCOLUMNS}
+                      HEADLESS
+                      FILTER
+                      PLACEHOLDER="Filter by Employee"
+                      onClick={editProjectTeamLeadSelect}
+                      onContextMenu={editProjectRemoveMember}
+                      minRows={0}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid2">
+                  <label htmlFor="Status">Status</label>
+                  <select
+                    onChange={handleEditProjectChange}
+                    name="Status"
+                    value={projectStateUpdate.Status || "Incomplete"}
+                  >
+                    <option value="Incomplete">Incomplete</option>
+                    <option value="Complete">Complete</option>
+                  </select>
+                </div>
+
+                <div className="grid2">
+                  <label htmlFor="Urgency">Priority</label>
+                  <select
+                    onChange={handleEditProjectChange}
+                    name="Urgency"
+                    value={projectStateUpdate.Urgency || "Critical"}
+                  >
+                    <option value="Critical">Critical</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+              </div>
+              <div className="btn-container">
+                <button className="project-btn">Submit</button>
+                <button
+                  className="project-btn yellow"
+                  onClick={handleBugsButtonClick}
+                >
+                  Bugs {">>"}
+                </button>
+              </div>
+            </form>
+          </Project>
+          {/* Main help modal */}
+          <Modal trigger={helpPopup} setTrigger={setHelpPopup}>
+            <div className="grid2">
+              <h2 className="marginless" style={{ marginBottom: "7px" }}>
+                HELP
+              </h2>
+              <div
+                className="grid2"
+                style={{
+                  border: "solid #9A9B9C 1px",
+                  padding: "10px",
+                }}
               >
-                New project
-              </button>
-              <button
-                className="project-btn"
-                onClick={() => setHelpPopup(true)}
-              >
-                <FontAwesomeIcon icon={faQuestion} style={{ height: "13px" }} />
-              </button>
+                <p>- Click NEW PROJECT button to create a new Project.</p>
+                <p>
+                  - Left click on a project in the table to view or edit it.
+                </p>
+                <p>- Right click on a project in the table to delete it.</p>
+              </div>
             </div>
-          </div>
-          <div className="project-table-container">
-            <Basictable
-              COLUMNS={PROJECTCOLUMNS}
-              DATA={projectTableData}
-              FILTER
-              PLACEHOLDER="Filter by Project, Description or Team Lead"
-              minRows={0}
-              onContextMenu={deleteConfirmation}
-              onClick={selectEditProjectFromRowId}
-            />
-          </div>
-        </div>
+          </Modal>
+          {/* Main */}
+          <div className="dashboard-container">
+            <div className="blue-bar"></div>
+            <h4 className="page-title">DASHBOARD</h4>
+            <div className="project-container">
+              <div className="project-top-container">
+                <h3>Projects</h3>
+                <div style={{ display: "flex" }}>
+                  <button
+                    className="project-btn"
+                    onClick={() => setProjectPopup(true)}
+                  >
+                    New project
+                  </button>
+                  <button
+                    className="project-btn"
+                    onClick={() => setHelpPopup(true)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestion}
+                      style={{ height: "13px" }}
+                    />
+                  </button>
+                </div>
+              </div>
+              <div className="project-table-container">
+                <Basictable
+                  COLUMNS={PROJECTCOLUMNS}
+                  DATA={projectTableData}
+                  FILTER
+                  PLACEHOLDER="Filter by Project, Description or Team Lead"
+                  minRows={0}
+                  onContextMenu={deleteConfirmation}
+                  onClick={selectEditProjectFromRowId}
+                />
+              </div>
+            </div>
 
-        {/* Pie charts */}
-        <div className="chart-container">
-          <div className="pie-wrapper">
-            <h2>Tickets by Urgnecy</h2>
-            <div className="pie-container">
-              <PieChart
-                style={{ height: "150px" }}
-                data={[
-                  {
-                    label: {},
-                    title: "Low",
-                    value: ticketUrgency.Low || 0,
-                    color: "#009B83",
-                  },
-                  {
-                    label: {},
-                    title: "Normal",
-                    value: ticketUrgency.Normal || 0,
-                    color: "#FFA825",
-                  },
-                  {
-                    label: {},
-                    title: "Critical",
-                    value: ticketUrgency.Critical || 0,
-                    color: "#FF2530",
-                  },
-                ]}
-              />
-              <ul>
-                <li>Critical: {ticketUrgency.Critical || 0}</li>
-                <li>Normal: {ticketUrgency.Normal || 0}</li>
-                <li>Low: {ticketUrgency.Low || 0}</li>
-              </ul>
-            </div>
-          </div>
+            {/* Pie charts */}
+            <div className="chart-container">
+              <div className="pie-wrapper">
+                <h2>Tickets by Urgnecy</h2>
+                <div className="pie-container">
+                  <PieChart
+                    style={{ height: "150px" }}
+                    data={[
+                      {
+                        label: {},
+                        title: "Low",
+                        value: ticketUrgency.Low || 0,
+                        color: "#009B83",
+                      },
+                      {
+                        label: {},
+                        title: "Normal",
+                        value: ticketUrgency.Normal || 0,
+                        color: "#FFA825",
+                      },
+                      {
+                        label: {},
+                        title: "Critical",
+                        value: ticketUrgency.Critical || 0,
+                        color: "#FF2530",
+                      },
+                    ]}
+                  />
+                  <ul>
+                    <li>Critical: {ticketUrgency.Critical || 0}</li>
+                    <li>Normal: {ticketUrgency.Normal || 0}</li>
+                    <li>Low: {ticketUrgency.Low || 0}</li>
+                  </ul>
+                </div>
+              </div>
 
-          <div className="pie-wrapper">
-            <h2>Tickets by Status</h2>
-            <div className="pie-container pie-status">
-              <PieChart
-                style={{ height: "150px" }}
-                data={[
-                  {
-                    label: {},
-                    title: "Complete",
-                    value: ticketStatus.Complete || 0,
-                    color: "#009B83",
-                  },
-                  {
-                    label: {},
-                    title: "Incomplete",
-                    value: ticketStatus.Incomplete || 0,
-                    color: "#FF2530",
-                  },
-                ]}
-              />
-              <ul>
-                <li>Complete: {ticketStatus.Complete || 0}</li>
-                <li>Incomplete: {ticketStatus.Incomplete || 0}</li>
-              </ul>
-            </div>
-          </div>
+              <div className="pie-wrapper">
+                <h2>Tickets by Status</h2>
+                <div className="pie-container pie-status">
+                  <PieChart
+                    style={{ height: "150px" }}
+                    data={[
+                      {
+                        label: {},
+                        title: "Complete",
+                        value: ticketStatus.Complete || 0,
+                        color: "#009B83",
+                      },
+                      {
+                        label: {},
+                        title: "Incomplete",
+                        value: ticketStatus.Incomplete || 0,
+                        color: "#FF2530",
+                      },
+                    ]}
+                  />
+                  <ul>
+                    <li>Complete: {ticketStatus.Complete || 0}</li>
+                    <li>Incomplete: {ticketStatus.Incomplete || 0}</li>
+                  </ul>
+                </div>
+              </div>
 
-          <div className="pie-wrapper">
-            <h2>Projects by Urgency</h2>
-            <div className="pie-container">
-              <PieChart
-                style={{ height: "150px" }}
-                data={[
-                  {
-                    label: {},
-                    title: "Low",
-                    value: projectUrgency.Low || 0,
-                    color: "#009B83",
-                  },
-                  {
-                    label: {},
-                    title: "Normal",
-                    value: projectUrgency.Normal || 0,
-                    color: "#FFA825",
-                  },
-                  {
-                    label: {},
-                    title: "Critical",
-                    value: projectUrgency.Critical || 0,
-                    color: "#FF2530",
-                  },
-                ]}
-              />
-              <ul>
-                <li>Critical: {projectUrgency.Critical || 0}</li>
-                <li>Normal: {projectUrgency.Normal || 0}</li>
-                <li>Low: {projectUrgency.Low || 0}</li>
-              </ul>
+              <div className="pie-wrapper">
+                <h2>Projects by Urgency</h2>
+                <div className="pie-container">
+                  <PieChart
+                    style={{ height: "150px" }}
+                    data={[
+                      {
+                        label: {},
+                        title: "Low",
+                        value: projectUrgency.Low || 0,
+                        color: "#009B83",
+                      },
+                      {
+                        label: {},
+                        title: "Normal",
+                        value: projectUrgency.Normal || 0,
+                        color: "#FFA825",
+                      },
+                      {
+                        label: {},
+                        title: "Critical",
+                        value: projectUrgency.Critical || 0,
+                        color: "#FF2530",
+                      },
+                    ]}
+                  />
+                  <ul>
+                    <li>Critical: {projectUrgency.Critical || 0}</li>
+                    <li>Normal: {projectUrgency.Normal || 0}</li>
+                    <li>Low: {projectUrgency.Low || 0}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };
